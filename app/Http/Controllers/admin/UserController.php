@@ -10,6 +10,6 @@ class UserController extends Controller
     public function index()
     {
         $data = User::with('role')->get();
-        return view('user.index', compact('data'));
+        return view('admin.datauser.index', compact('data'));
     }
 }

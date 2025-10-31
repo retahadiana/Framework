@@ -29,6 +29,8 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+    public $timestamps = false;
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -69,5 +71,13 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')
                     ->withPivot('status');
+    }
+
+    /**
+     * Rekam medis yang diperiksa oleh user (dokter)
+     */
+    public function rekamMedis()
+    {
+        return $this->hasMany(\App\Models\RekamMedis::class, 'dokter_pemeriksa');
     }
 }

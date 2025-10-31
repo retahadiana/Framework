@@ -10,6 +10,6 @@ class KategoriKlinisController extends Controller
     public function index()
     {
         $data = KategoriKlinis::all();
-        return view('kategori_klinis.index', compact('data'));
+        return view('admin.datakategoriklinis.index', compact('data'));
     }
 }

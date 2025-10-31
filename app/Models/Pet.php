@@ -8,29 +8,23 @@ class Pet extends Model
 {
     protected $table = 'pet';
     protected $primaryKey = 'idpet';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    protected $fillable = ['nama', 'tanggal_lahir', 'warna_tanda', 'jenis_kelamin', 'idpemilik', 'idras_hewan'];
     public $timestamps = false;
-
-    protected $fillable = [
-        'nama_var',
-        'tanggal_lahir',
-        'warna_tanda',
-        'jenis_kelamin',
-        'idpemilik',
-        'idras_hewan',
-    ];
 
     public function pemilik()
     {
-        return $this->belongsTo(Pemilik::class, 'idpemilik');
+        return $this->belongsTo(Pemilik::class, 'idpemilik', 'idpemilik');
     }
 
     public function rasHewan()
     {
-        return $this->belongsTo(RasHewan::class, 'idras_hewan');
+        return $this->belongsTo(RasHewan::class, 'idras_hewan', 'idras_hewan');
     }
 
     public function rekamMedis()
     {
-        return $this->hasMany(RekamMedis::class, 'idpet');
+        return $this->hasMany(RekamMedis::class, 'idpet', 'idpet');
     }
 }

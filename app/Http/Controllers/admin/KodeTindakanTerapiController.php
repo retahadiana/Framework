@@ -10,6 +10,6 @@ class KodeTindakanTerapiController extends Controller
     public function index()
     {
         $data = KodeTindakanTerapi::with(['kategori', 'kategoriKlinis'])->get();
-        return view('kode_tindakan_terapi.index', compact('data'));
+        return view('admin.datatindakan.index', compact('data'));
     }
 }
