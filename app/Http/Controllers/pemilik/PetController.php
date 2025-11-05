@@ -15,6 +15,6 @@ class PetController extends Controller
             $query->where('iduser', Auth::id());
         })->with(['rasHewan'])->get();
 
-        return view('pemilik.pet.index', compact('data'));
+        return view('dashboard.pemilik', compact('data'));
     }
 }

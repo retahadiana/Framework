@@ -31,7 +31,7 @@
             <p class="card-text">Anda dapat melihat data terkait praktik dokter hewan.</p>
             <ul>
                 <li><a href="{{ route('dokter.rekam_medis.index') }}">Rekam Medis</a></li>
-                <li><a href="{{ route('dokter.kode_tindakan_terapi.index') }}">Kode Tindakan Terapi</a></li>
+                <li><a href="'dokter.dashboard">Kode Tindakan Terapi</a></li>
             </ul>
         </div>
     </div>

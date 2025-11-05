@@ -4,26 +4,49 @@ namespace App\Http\Controllers\dokter;
 
 use App\Http\Controllers\Controller;
 use App\Models\RekamMedis;
+use Illuminate\Support\Facades\Auth;
 
 class RekamMedisController extends Controller
 {
     /**
-     * Display a listing of the resource filtered to the authenticated doctor.
+     * Tampilkan daftar rekam medis pasien berdasarkan dokter yang sedang login.
      */
     public function index()
     {
-        // Determine the authenticated user's primary key. auth()->id() will
-        // return the correct value even if the model uses a non-standard PK.
-        $doctorId = auth()->id();
+        // Determine the current user's active role_user id (dokter)
+        $user = Auth::user();
+        $activeRoleUser = $user ? $user->roleUser()->where('status', 1)->first() : null;
+        $roleUserId = $activeRoleUser->idrole_user ?? -1;
 
-        // Only fetch rekam medis where 'dokter_pemeriksa' equals the logged-in doctor.
-        // Eager load pet -> pemilik -> user to avoid N+1 queries.
-        // Order by newest visits first and use pagination for large datasets.
-        $data = RekamMedis::with(['pet', 'pet.pemilik.user'])
-            ->where('dokter_pemeriksa', $doctorId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        // Ambil rekam medis yang hanya ditangani oleh dokter ini (dokter_pemeriksa stores role_user.idrole_user)
+        $data = RekamMedis::with(['temuDokter.pet.pemilik.user'])
+        ->where('dokter_pemeriksa', $roleUserId)
+        ->orderByDesc('created_at')
+        ->paginate(10);
 
+
+        // Kirim ke view
         return view('dokter.rekam_medis.index', compact('data'));
+    }
+
+    /**
+     * Menampilkan detail rekam medis.
+     */
+    public function show(RekamMedis $rekam)
+    {
+        // Pastikan dokter yang login adalah dokter yang menangani rekam medis ini
+        $user = Auth::user();
+        $activeRoleUser = $user ? $user->roleUser()->where('status', 1)->first() : null;
+        $roleUserId = $activeRoleUser->idrole_user ?? -1;
+
+        if ($rekam->dokter_pemeriksa != $roleUserId) {
+            // Jika bukan, kembalikan ke halaman index dengan pesan error
+            return redirect()->route('dokter.rekam_medis.index')->with('error', 'Anda tidak memiliki akses ke rekam medis ini.');
+        }
+
+        // Eager load relasi yang dibutuhkan
+        $rekam->load(['pet.pemilik.user', 'roleUser.user', 'detailRekamMedis.kodeTindakanTerapi.kategori']);
+
+        return view('dokter.rekam_medis.show', compact('rekam'));
     }
 }

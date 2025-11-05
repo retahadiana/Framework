@@ -14,7 +14,7 @@
             <td>{{ $item->tanggal_lahir }}</td>
             <td>{{ $item->warna_tanda }}</td>
             <td>{{ $item->jenis_kelamin }}</td>
-            <td>{{ $item->pemilik->user->name ?? 'N/A' }}</td>
+            <td>{{ data_get($item, 'pemilik.user.nama') ?? data_get($item, 'pemilik.user.name') ?? 'N/A' }}</td>
             <td>{{ $item->rasHewan->nama_ras ?? 'N/A' }}</td>
         </tr>
         @endforeach

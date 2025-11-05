@@ -43,23 +43,41 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 });
 
 Route::middleware(['auth', 'isDokter'])->group(function () {
-    Route::get('/dokter/dashboard', [DokterDashboardController::class, 'index'])->name('dokter.dashboard');
+    Route::get('/dokter/dashboard', [DokterDashboardController::class, 'index'])
+        ->name('dokter.dashboard');
 
-    // Data management routes for dokter
-    Route::get('/dokter/rekam-medis', [App\Http\Controllers\dokter\RekamMedisController::class, 'index'])->name('dokter.rekam_medis.index');
-    Route::get('/dokter/kode-tindakan-terapi', [App\Http\Controllers\dokter\KodeTindakanTerapiController::class, 'index'])->name('dokter.kode_tindakan_terapi.index');
+    Route::get('/dokter/rekam-medis', 
+        [App\Http\Controllers\dokter\RekamMedisController::class, 'index'])
+    ->name('dokter.rekam_medis.index');
+
+    Route::get('/dokter/rekam-medis/{rekam}', 
+        [App\Http\Controllers\dokter\RekamMedisController::class, 'show'])
+    ->name('dokter.rekam_medis.show');
 });
+
 
 Route::middleware(['auth', 'isPerawat'])->group(function () {
     Route::get('/perawat/dashboard', [PerawatDashboardController::class, 'index'])->name('perawat.dashboard');
+
+    Route::get('/perawat/rekam-medis',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'index'])
+    ->name('perawat.rekam_medis.index');
+
+    Route::get('/perawat/kode-tindakan-terapi',
+        [App\Http\Controllers\perawat\KodeTindakanTerapiController::class, 'index'])
+    ->name('perawat.kode_tindakan_terapi.index');
 });
 
 Route::middleware(['auth', 'isResepsionis'])->group(function () {
     Route::get('/resepsionis/dashboard', [ResepsionisDashboardController::class, 'index'])->name('resepsionis.dashboard');
+
+    Route::get('/resepsionis/pemilik', [App\Http\Controllers\resepsionis\PemilikController::class, 'index'])->name('resepsionis.pemilik.index');
+    Route::get('/resepsionis/pet', [App\Http\Controllers\resepsionis\PetController::class, 'index'])->name('resepsionis.pet.index');
+    Route::get('/resepsionis/temu-dokter', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'index'])->name('resepsionis.temu_dokter.index');
 });
 
 Route::middleware(['auth', 'isPemilik'])->group(function () {
-    Route::get('/pemilik/dashboard', [PemilikDashboardController::class, 'index'])->name('pemilik.dashboard');
+    Route::get('/dashboard/pemilik', [PemilikDashboardController::class, 'index'])->name('pemilik.dashboard');
 });
 
 
