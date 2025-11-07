@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\JenisHewan;
 // memanggil model JenisHewan untuk ditampilkan di view web
+
 class JenisHewanController extends Controller
 {
     public function index()
@@ -18,15 +19,27 @@ class JenisHewanController extends Controller
         return view('admin.jenishewan.create');
     }
 
-    public function store(\Illuminate\Http\Request $request)
+    // === HELPER: Validasi Jenis Hewan ===
+    protected function validateJenisHewan($request)
     {
-        $request->validate([
+        return $request->validate([
             'nama_jenis_hewan' => 'required|string|max:255',
         ], [
             'nama_jenis_hewan.required' => 'Nama jenis hewan wajib diisi.',
         ]);
+    }
+
+    // === HELPER: Format Nama Jenis Hewan ===
+    protected function formatNamaJenisHewan($nama)
+    {
+        return trim(ucwords(strtolower($nama)));
+    }
+
+    public function store(\Illuminate\Http\Request $request)
+    {
+        $validated = $this->validateJenisHewan($request);
         JenisHewan::create([
-            'nama_jenis_hewan' => $request->nama_jenis_hewan,
+            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan']),
         ]);
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil ditambahkan.');
     }
@@ -39,14 +52,10 @@ class JenisHewanController extends Controller
 
     public function update(\Illuminate\Http\Request $request, $id)
     {
-        $request->validate([
-            'nama_jenis_hewan' => 'required|string|max:255',
-        ], [
-            'nama_jenis_hewan.required' => 'Nama jenis hewan wajib diisi.',
-        ]);
+        $validated = $this->validateJenisHewan($request);
         $item = JenisHewan::findOrFail($id);
         $item->update([
-            'nama_jenis_hewan' => $request->nama_jenis_hewan,
+            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan']),
         ]);
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil diupdate.');
     }
