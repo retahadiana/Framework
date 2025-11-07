@@ -2,15 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Site\SiteController;
-use App\Http\Controllers\admin\JenisHewanController;
-use App\Http\Controllers\admin\RasHewanController;
-use App\Http\Controllers\admin\KategoriController;
-use App\Http\Controllers\admin\KategoriKlinisController;
-use App\Http\Controllers\admin\KodeTindakanTerapiController;
-use App\Http\Controllers\admin\PemilikController;
-use App\Http\Controllers\admin\PetController;
-use App\Http\Controllers\admin\RoleController;
-use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\Admin\JenisHewanController;
+use App\Http\Controllers\Admin\RasHewanController;
+use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\KategoriKlinisController;
+use App\Http\Controllers\Admin\KodeTindakanTerapiController;
+use App\Http\Controllers\Admin\PemilikController;
+use App\Http\Controllers\Admin\PetController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Dashboard\AdminDashboardController;
 use App\Http\Controllers\Dashboard\DokterDashboardController;
@@ -27,19 +27,86 @@ Route::get('/', function () {
     return view('LandingPage.home');
 })->name('home');
 
-Route::middleware(['auth', 'isAdmin'])->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(function () {
+    Route::prefix('pemilik')->name('pemilik.')->group(function () {
+        Route::get('/', [PemilikController::class, 'index'])->name('index');
+        Route::get('/create', [PemilikController::class, 'create'])->name('create');
+        Route::post('/store', [PemilikController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [PemilikController::class, 'edit'])->name('edit');
+        Route::put('/{id}/update', [PemilikController::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [PemilikController::class, 'destroy'])->name('destroy');
+    });
+    Route::resource('pet', PetController::class);
     Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
 
-    // Data management routes for admin
-    Route::get('/jenis-hewan', [JenisHewanController::class, 'index'])->name('jenis_hewan.index');
-    Route::get('/ras-hewan', [RasHewanController::class, 'index'])->name('ras_hewan.index');
-    Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
-    Route::get('/kategori-klinis', [KategoriKlinisController::class, 'index'])->name('kategori_klinis.index');
-    Route::get('/kode-tindakan-terapi', [KodeTindakanTerapiController::class, 'index'])->name('kode_tindakan_terapi.index');
-    Route::get('/pemilik', [PemilikController::class, 'index'])->name('pemilik.index');
-    Route::get('/pet', [PetController::class, 'index'])->name('pet.index');
-    Route::get('/role', [RoleController::class, 'index'])->name('role.index');
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    // Data management routes for admin (grouped, with create & store)
+    Route::prefix('jenis-hewan')->name('jenis-hewan.')->group(function () {
+    Route::get('/', [JenisHewanController::class, 'index'])->name('index');
+    Route::get('/create', [JenisHewanController::class, 'create'])->name('create');
+    Route::post('/store', [JenisHewanController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [JenisHewanController::class, 'edit'])->name('edit');
+    Route::put('/{id}/update', [JenisHewanController::class, 'update'])->name('update');
+    Route::delete('/{id}/destroy', [JenisHewanController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('ras-hewan')->name('ras-hewan.')->group(function () {
+    Route::get('/', [RasHewanController::class, 'index'])->name('index');
+    Route::get('/create', [RasHewanController::class, 'create'])->name('create');
+    Route::post('/store', [RasHewanController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [RasHewanController::class, 'edit'])->name('edit');
+    Route::put('/{id}/update', [RasHewanController::class, 'update'])->name('update');
+    Route::delete('/{id}/destroy', [RasHewanController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('kategori')->name('kategori.')->group(function () {
+    Route::get('/', [KategoriController::class, 'index'])->name('index');
+    Route::get('/create', [KategoriController::class, 'create'])->name('create');
+    Route::post('/store', [KategoriController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
+    Route::put('/{id}/update', [KategoriController::class, 'update'])->name('update');
+    Route::get('/{id}/delete', [KategoriController::class, 'delete'])->name('delete');
+    Route::delete('/{id}/destroy', [KategoriController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('kategori-klinis')->name('kategori-klinis.')->group(function () {
+    Route::get('/', [KategoriKlinisController::class, 'index'])->name('index');
+    Route::get('/create', [KategoriKlinisController::class, 'create'])->name('create');
+    Route::post('/store', [KategoriKlinisController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [KategoriKlinisController::class, 'edit'])->name('edit');
+    Route::put('/{id}/update', [KategoriKlinisController::class, 'update'])->name('update');
+    Route::get('/{id}/delete', [KategoriKlinisController::class, 'delete'])->name('delete');
+    Route::delete('/{id}/destroy', [KategoriKlinisController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('kode-tindakan-terapi')->name('kode-tindakan-terapi.')->group(function () {
+    Route::get('/', [KodeTindakanTerapiController::class, 'index'])->name('index');
+    Route::get('/create', [KodeTindakanTerapiController::class, 'create'])->name('create');
+    Route::post('/store', [KodeTindakanTerapiController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [KodeTindakanTerapiController::class, 'edit'])->name('edit');
+    Route::put('/{id}/update', [KodeTindakanTerapiController::class, 'update'])->name('update');
+    Route::get('/{id}/delete', [KodeTindakanTerapiController::class, 'delete'])->name('delete');
+    Route::delete('/{id}/destroy', [KodeTindakanTerapiController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('pemilik')->name('pemilik.')->group(function () {
+    Route::get('/', [PemilikController::class, 'index'])->name('index');
+    Route::get('/create', [PemilikController::class, 'create'])->name('create');
+    Route::post('/store', [PemilikController::class, 'store'])->name('store');
+    });
+    Route::prefix('pet')->name('pet.')->group(function () {
+    Route::get('/', [PetController::class, 'index'])->name('index');
+    Route::get('/create', [PetController::class, 'create'])->name('create');
+    Route::post('/store', [PetController::class, 'store'])->name('store');
+    });
+    Route::prefix('role')->name('role.')->group(function () {
+    Route::get('/', [RoleController::class, 'index'])->name('index');
+    Route::get('/{iduser}/create', [RoleController::class, 'create'])->name('create');
+    Route::post('/{iduser}/store', [RoleController::class, 'store'])->name('store');
+    });
+    Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::get('/create', [UserController::class, 'create'])->name('create');
+    Route::post('/', [UserController::class, 'store'])->name('store');
+    Route::get('/{iduser}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::put('/{iduser}', [UserController::class, 'update'])->name('update');
+    Route::get('/{iduser}/resetPassword', [UserController::class, 'showResetPassword'])->name('showResetPassword');
+    Route::post('/{iduser}/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
+    });
 });
 
 Route::middleware(['auth', 'isDokter'])->group(function () {

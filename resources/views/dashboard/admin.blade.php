@@ -12,11 +12,11 @@
             <ul>
                 <li><a href="{{ route('user.index') }}">Data User</a></li>
                 <li><a href="{{ route('pet.index') }}">Data Hewan</a></li>
-                <li><a href="{{ route('jenis_hewan.index') }}">Jenis Hewan</a></li>
-                <li><a href="{{ route('ras_hewan.index') }}">ras hewan</a></li>
+                <li><a href="{{ route('jenis-hewan.index') }}">Jenis Hewan</a></li>
+                <li><a href="{{ route('ras-hewan.index') }}">ras hewan</a></li>
                 <li><a href="{{ route('kategori.index') }}">Kategori</a></li>
-                <li><a href="{{ route('kategori_klinis.index') }}">Kategori Klinis</a></li>
-                <li><a href="{{ route('kode_tindakan_terapi.index') }}">Kode Tindakan Terapi</a></li>
+                <li><a href="{{ route('kategori-klinis.index') }}">Kategori Klinis</a></li>
+                <li><a href="{{ route('kode-tindakan-terapi.index') }}">Kode Tindakan Terapi</a></li>
                 <li><a href="{{ route('pemilik.index') }}">Data Pemilik</a></li>
                 <li><a href="{{ route('role.index') }}">Data Role</a></li>
             </ul>

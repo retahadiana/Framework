@@ -16,6 +16,13 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')->withPivot('status');
+    }
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +32,7 @@ class User extends Authenticatable
     protected $table = 'user';
     protected $primaryKey = 'iduser';
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'password',
     ];
@@ -62,20 +69,15 @@ class User extends Authenticatable
     }
 
     // Relasi ke RoleUser (pivot)
+    // Relasi ke RoleUser (pivot)
     public function roleUser()
     {
         return $this->hasMany(RoleUser::class, 'iduser');
-    }
+    }   
 
-    public function role()
-    {
-        return $this->belongsToMany(Role::class, 'role_user', 'iduser', 'idrole')
-                    ->withPivot('status');
-    }
+    // Relasi ke Role (many to many, jika diperlukan)
 
-    /**
-     * Rekam medis yang diperiksa oleh user (dokter)
-     */
+    // Relasi ke RekamMedis (jika diperlukan)
     public function rekamMedis()
     {
         return $this->hasMany(\App\Models\RekamMedis::class, 'dokter_pemeriksa');

@@ -13,16 +13,18 @@ class Pemilik extends Model
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
+        'nama_pemilik',
         'no_wa',
         'alamat',
         'iduser',
     ];
+
     public $timestamps = false;
 
 
     public function user()
     {
-        return $this->belongsTo(User::class,'iduser', 'iduser');
+        return $this->belongsTo(User::class, 'iduser', 'iduser');
     }
 
     public function pets()
@@ -32,6 +34,6 @@ class Pemilik extends Model
 
     public function rekamMedis()
     {
-        return $this->hasMany(RekamMedis::class, 'idpemilik', 'idpemilik'); 
+        return $this->hasMany(RekamMedis::class, 'idpemilik', 'idpemilik');
     }
 }
