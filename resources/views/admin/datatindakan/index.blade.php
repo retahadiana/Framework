@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 
 @section('content')
 
@@ -27,8 +27,8 @@
                     <td>{{ $item->idkode_tindakan_terapi }}</td>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->deskripsi_tindakan_terapi }}</td>
-                    <td>{{ $item->kategori->nama_kategori ?? 'N/A' }}</td>
-                    <td>{{ $item->kategoriKlinis->nama_kategori_klinis ?? 'N/A' }}</td>
+                    <td>{{ $item->nama_kategori ?? '-' }}</td>
+                    <td>{{ $item->nama_kategori_klinis ?? '-' }}</td>
                     <td>
                         <a href="{{ route('kode-tindakan-terapi.edit', $item->idkode_tindakan_terapi) }}" style="color: #319da7; font-weight: 600; margin-right: 12px;">Edit</a>
                         <a href="{{ route('kode-tindakan-terapi.delete', $item->idkode_tindakan_terapi) }}" style="color: #e74c3c; font-weight: 600;">Hapus</a>

@@ -14,8 +14,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        // Ambil semua user
-        $data = User::all();
+        $data = \DB::table('user')->get();
         return view('admin.datauser.index', compact('data'));
     }
 
@@ -72,14 +71,16 @@ class UserController extends Controller
     // Tampilkan form edit user
     public function edit($iduser)
     {
-        $user = User::findOrFail($iduser);
+        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        if (!$user) {
+            abort(404);
+        }
         return view('admin.datauser.edit', compact('user'));
     }
 
     // Update data user
     public function update(Request $request, $iduser)
     {
-        $user = User::findOrFail($iduser);
         $validatedData = $request->validate([
             'nama' => ['required', 'string', 'max:255', 'min:3', 'unique:user,nama,' . $iduser . ',iduser'],
             'email' => ['required', 'email', 'max:255', 'unique:user,email,' . $iduser . ',iduser'],
@@ -94,7 +95,7 @@ class UserController extends Controller
             'email.max' => 'Email maksimal 255 karakter.',
             'email.unique' => 'Email sudah ada.',
         ]);
-        $user->update([
+        \DB::table('user')->where('iduser', $iduser)->update([
             'nama' => trim(ucwords(strtolower($validatedData['nama']))),
             'email' => $validatedData['email'],
         ]);
@@ -105,28 +106,34 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validatedData = $this->validateUser($request);
-        $user = $this->createUser($validatedData);
+        \DB::table('user')->insert([
+            'nama' => $this->formatNamaUser($validatedData['nama']),
+            'email' => $validatedData['email'],
+            'password' => bcrypt($validatedData['password']),
+        ]);
         return redirect()->route('user.index')->with('success', 'User berhasil ditambahkan.');
     }
 
     // Tampilkan form reset password
     public function showResetPassword($iduser)
     {
-        $user = User::findOrFail($iduser);
+        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        if (!$user) {
+            abort(404);
+        }
         return view('admin.datauser.resetPassword', compact('user'));
     }
 
     // Reset password
     public function resetPassword(Request $request, $iduser)
     {
-        $user = User::findOrFail($iduser);
         $validatedData = $request->validate([
             'password' => ['required', 'string', 'min:6'],
         ], [
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal 6 karakter.',
         ]);
-        $user->update([
+        \DB::table('user')->where('iduser', $iduser)->update([
             'password' => bcrypt($validatedData['password']),
         ]);
         return redirect()->route('user.index')->with('success', 'Password berhasil direset.');

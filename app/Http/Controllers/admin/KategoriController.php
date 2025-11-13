@@ -14,7 +14,7 @@ class KategoriController extends Controller
 
     public function index()
     {
-        $data = Kategori::all();
+        $data = \DB::table('kategori')->get();
         return view('admin.datakategori.index', compact('data'));
     }
 
@@ -39,8 +39,8 @@ class KategoriController extends Controller
     protected function createKategori(array $data)
     {
         try {
-            return Kategori::create([
-                'nama_kategori' => $this->formatNamaKategori($data['nama_kategori']),
+            return \DB::table('kategori')->insert([
+                'nama_kategori' => $this->formatNamaKategori($data['nama_kategori'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data kategori: ' . $e->getMessage());
@@ -63,14 +63,17 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $validatedData = $this->validateKategori($request);
-        $kategori = $this->createKategori($validatedData);
+        $this->createKategori($validatedData);
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     // Tampilkan form edit
     public function edit($id)
     {
-        $kategori = Kategori::findOrFail($id);
+        $kategori = \DB::table('kategori')->where('idkategori', $id)->first();
+        if (!$kategori) {
+            abort(404);
+        }
         return view('admin.datakategori.update', compact('kategori'));
     }
 
@@ -78,9 +81,8 @@ class KategoriController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $this->validateKategori($request, $id);
-        $kategori = Kategori::findOrFail($id);
-        $kategori->update([
-            'nama_kategori' => $this->formatNamaKategori($validatedData['nama_kategori']),
+        \DB::table('kategori')->where('idkategori', $id)->update([
+            'nama_kategori' => $this->formatNamaKategori($validatedData['nama_kategori'])
         ]);
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diupdate.');
     }
@@ -88,15 +90,17 @@ class KategoriController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kategori = Kategori::findOrFail($id);
+        $kategori = \DB::table('kategori')->where('idkategori', $id)->first();
+        if (!$kategori) {
+            abort(404);
+        }
         return view('admin.datakategori.delete', compact('kategori'));
     }
 
     // Hapus data
     public function destroy($id)
     {
-        $kategori = Kategori::findOrFail($id);
-        $kategori->delete();
+        \DB::table('kategori')->where('idkategori', $id)->delete();
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

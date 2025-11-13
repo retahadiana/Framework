@@ -14,7 +14,14 @@ class RasHewanController extends Controller
 
     public function index()
     {
-        $data = RasHewan::with('jenisHewan')->get();
+        $data = \DB::table('ras_hewan')
+            ->leftJoin('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
+            ->select(
+                'ras_hewan.*',
+                'jenis_hewan.idjenis_hewan',
+                'jenis_hewan.nama_jenis_hewan'
+            )
+            ->get();
         return view('admin.rashewan.index', compact('data'));
     }
 
@@ -39,8 +46,8 @@ class RasHewanController extends Controller
     protected function createRasHewan(array $data)
     {
         try {
-            return RasHewan::create([
-                'nama_ras_hewan' => $this->formatNamaRasHewan($data['nama_ras_hewan']),
+            return \DB::table('ras_hewan')->insert([
+                'nama_ras_hewan' => $this->formatNamaRasHewan($data['nama_ras_hewan'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data ras hewan: ' . $e->getMessage());
@@ -56,7 +63,7 @@ class RasHewanController extends Controller
     // Tampilkan form create
     public function create()
     {
-        $jenisHewan = \App\Models\JenisHewan::all();
+        $jenisHewan = \DB::table('jenis_hewan')->get();
         return view('admin.rashewan.create', compact('jenisHewan'));
     }
 
@@ -69,7 +76,7 @@ class RasHewanController extends Controller
             'nama_ras.required' => 'Nama ras hewan wajib diisi.',
             'idjenis_hewan.required' => 'Jenis hewan wajib dipilih.',
         ]);
-        RasHewan::create([
+        \DB::table('ras_hewan')->insert([
             'nama_ras' => $request->nama_ras,
             'idjenis_hewan' => $request->idjenis_hewan,
         ]);
@@ -78,8 +85,11 @@ class RasHewanController extends Controller
 
     public function edit($id)
     {
-        $item = RasHewan::findOrFail($id);
-        $jenisHewan = \App\Models\JenisHewan::all();
+        $item = \DB::table('ras_hewan')->where('idras_hewan', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
+        $jenisHewan = \DB::table('jenis_hewan')->get();
         return view('admin.rashewan.update', compact('item', 'jenisHewan'));
     }
 
@@ -92,8 +102,11 @@ class RasHewanController extends Controller
             'nama_ras.required' => 'Nama ras hewan wajib diisi.',
             'idjenis_hewan.required' => 'Jenis hewan wajib dipilih.',
         ]);
-        $item = RasHewan::findOrFail($id);
-        $item->update([
+        $item = \DB::table('ras_hewan')->where('idras_hewan', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
+        \DB::table('ras_hewan')->where('idras_hewan', $id)->update([
             'nama_ras' => $request->nama_ras,
             'idjenis_hewan' => $request->idjenis_hewan,
         ]);
@@ -102,8 +115,11 @@ class RasHewanController extends Controller
 
     public function destroy($id)
     {
-        $item = RasHewan::findOrFail($id);
-        $item->delete();
+        $item = \DB::table('ras_hewan')->where('idras_hewan', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
+        \DB::table('ras_hewan')->where('idras_hewan', $id)->delete();
         return redirect()->route('ras-hewan.index')->with('success', 'Ras hewan berhasil dihapus.');
     }
 

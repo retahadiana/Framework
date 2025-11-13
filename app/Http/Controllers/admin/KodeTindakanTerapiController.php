@@ -14,7 +14,15 @@ class KodeTindakanTerapiController extends Controller
 
     public function index()
     {
-        $data = KodeTindakanTerapi::with(['kategori', 'kategoriKlinis'])->get();
+        $data = \DB::table('kode_tindakan_terapi')
+            ->leftJoin('kategori', 'kode_tindakan_terapi.idkategori', '=', 'kategori.idkategori')
+            ->leftJoin('kategori_klinis', 'kode_tindakan_terapi.idkategori_klinis', '=', 'kategori_klinis.idkategori_klinis')
+            ->select(
+                'kode_tindakan_terapi.*',
+                'kategori.nama_kategori',
+                'kategori_klinis.nama_kategori_klinis'
+            )
+            ->get();
         return view('admin.datatindakan.index', compact('data'));
     }
 
@@ -39,8 +47,8 @@ class KodeTindakanTerapiController extends Controller
     protected function createKodeTindakanTerapi(array $data)
     {
         try {
-            return KodeTindakanTerapi::create([
-                'nama_kode_tindakan_terapi' => $this->formatNamaKodeTindakanTerapi($data['nama_kode_tindakan_terapi']),
+            return \DB::table('kode_tindakan_terapi')->insert([
+                'nama_kode_tindakan_terapi' => $this->formatNamaKodeTindakanTerapi($data['nama_kode_tindakan_terapi'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data kode tindakan terapi: ' . $e->getMessage());
@@ -56,8 +64,8 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan form create
     public function create()
     {
-        $kategoriList = \App\Models\Kategori::all();
-        $kategoriKlinisList = \App\Models\KategoriKlinis::all();
+        $kategoriList = \DB::table('kategori')->get();
+        $kategoriKlinisList = \DB::table('kategori_klinis')->get();
         return view('admin.datatindakan.create', compact('kategoriList', 'kategoriKlinisList'));
     }
 
@@ -70,7 +78,7 @@ class KodeTindakanTerapiController extends Controller
             'idkategori' => 'required|exists:kategori,idkategori',
             'idkategori_klinis' => 'required|exists:kategori_klinis,idkategori_klinis',
         ]);
-        KodeTindakanTerapi::create([
+        \DB::table('kode_tindakan_terapi')->insert([
             'kode' => $request->kode,
             'deskripsi_tindakan_terapi' => $request->deskripsi_tindakan_terapi,
             'idkategori' => $request->idkategori,
@@ -82,9 +90,12 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan form edit
     public function edit($id)
     {
-        $kodeTindakanTerapi = KodeTindakanTerapi::findOrFail($id);
-        $kategoriList = \App\Models\Kategori::all();
-        $kategoriKlinisList = \App\Models\KategoriKlinis::all();
+        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
+        if (!$kodeTindakanTerapi) {
+            abort(404);
+        }
+        $kategoriList = \DB::table('kategori')->get();
+        $kategoriKlinisList = \DB::table('kategori_klinis')->get();
         return view('admin.datatindakan.update', compact('kodeTindakanTerapi', 'kategoriList', 'kategoriKlinisList'));
     }
 
@@ -97,8 +108,7 @@ class KodeTindakanTerapiController extends Controller
             'idkategori' => 'required|exists:kategori,idkategori',
             'idkategori_klinis' => 'required|exists:kategori_klinis,idkategori_klinis',
         ]);
-        $kodeTindakanTerapi = KodeTindakanTerapi::findOrFail($id);
-        $kodeTindakanTerapi->update([
+        \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->update([
             'kode' => $request->kode,
             'deskripsi_tindakan_terapi' => $request->deskripsi_tindakan_terapi,
             'idkategori' => $request->idkategori,
@@ -110,15 +120,17 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kodeTindakanTerapi = KodeTindakanTerapi::findOrFail($id);
+        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
+        if (!$kodeTindakanTerapi) {
+            abort(404);
+        }
         return view('admin.datatindakan.delete', compact('kodeTindakanTerapi'));
     }
 
     // Hapus data
     public function destroy($id)
     {
-        $kodeTindakanTerapi = KodeTindakanTerapi::findOrFail($id);
-        $kodeTindakanTerapi->delete();
+        \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->delete();
         return redirect()->route('kode-tindakan-terapi.index')->with('success', 'Kode tindakan terapi berhasil dihapus.');
     }
 }

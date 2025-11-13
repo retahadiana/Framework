@@ -9,8 +9,11 @@ class RoleController extends Controller
 {
     public function create($iduser)
     {
-        $user = \App\Models\User::findOrFail($iduser);
-        $roles = \App\Models\Role::all();
+        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        if (!$user) {
+            abort(404);
+        }
+        $roles = \DB::table('role')->get();
         return view('admin.role.create', compact('user', 'roles'));
     }
     public function __construct()
@@ -20,8 +23,12 @@ class RoleController extends Controller
 
     public function index()
     {
-        // Ambil semua user beserta relasi roles
-        $data = \App\Models\User::with('roles')->get();
+        // Ambil semua user beserta relasi roles (pakai join)
+        $data = \DB::table('user')
+            ->leftJoin('role_user', 'user.iduser', '=', 'role_user.iduser')
+            ->leftJoin('role', 'role_user.idrole', '=', 'role.idrole')
+            ->select('user.*', 'role.nama_role', 'role_user.status as role_status')
+            ->get();
         return view('admin.role.index', compact('data'));
     }
 
@@ -46,8 +53,8 @@ class RoleController extends Controller
     protected function createRole(array $data)
     {
         try {
-            return Role::create([
-                'nama_role' => $this->formatNamaRole($data['nama_role']),
+            return \DB::table('role')->insert([
+                'nama_role' => $this->formatNamaRole($data['nama_role'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data role: ' . $e->getMessage());
@@ -72,11 +79,18 @@ class RoleController extends Controller
             'idrole.exists' => 'Role tidak valid.',
         ]);
 
-        $user = \App\Models\User::findOrFail($iduser);
+        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        if (!$user) {
+            abort(404);
+        }
         $status = $request->has('status') ? 1 : 0;
 
-        // Attach role to user with status
-        $user->roles()->attach($request->idrole, ['status' => $status]);
+        // Attach role to user with status (insert ke role_user)
+        \DB::table('role_user')->insert([
+            'iduser' => $iduser,
+            'idrole' => $request->idrole,
+            'status' => $status
+        ]);
 
         return redirect()->route('role.index')->with('success', 'Role berhasil ditambahkan ke user.');
     }

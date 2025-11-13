@@ -14,8 +14,11 @@ class PemilikController extends Controller
 
     public function index()
     {
-    $data = Pemilik::with('user')->get();
-    return view('admin.pemilik.index', compact('data'));
+        $data = \DB::table('pemilik')
+            ->leftJoin('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->select('pemilik.*', 'user.nama as nama_user', 'user.email as email_user')
+            ->get();
+        return view('admin.pemilik.index', compact('data'));
     }
 
     // Validasi
@@ -39,8 +42,8 @@ class PemilikController extends Controller
     protected function createPemilik(array $data)
     {
         try {
-            return Pemilik::create([
-                'nama_pemilik' => $this->formatNamaPemilik($data['nama_pemilik']),
+            return \DB::table('pemilik')->insert([
+                'nama_pemilik' => $this->formatNamaPemilik($data['nama_pemilik'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data pemilik: ' . $e->getMessage());
@@ -56,8 +59,13 @@ class PemilikController extends Controller
     // Tampilkan form create
     public function create()
     {
-    $users = \App\Models\User::whereHas('roles', function($q){ $q->where('nama_role', 'pemilik'); })->get();
-    return view('admin.pemilik.create', compact('users'));
+        $users = \DB::table('user')
+            ->join('role_user', 'user.iduser', '=', 'role_user.iduser')
+            ->join('role', 'role_user.idrole', '=', 'role.idrole')
+            ->where('role.nama_role', 'pemilik')
+            ->select('user.*')
+            ->get();
+        return view('admin.pemilik.create', compact('users'));
     }
 
     public function store(Request $request)
@@ -73,15 +81,19 @@ class PemilikController extends Controller
             'alamat.required' => 'Alamat wajib diisi.',
         ]);
 
-        // Ambil nama user yang role-nya 'pemilik'
-        $user = \App\Models\User::where('iduser', $request->iduser)
-            ->whereHas('roles', function($q){ $q->where('nama_role', 'pemilik'); })
+        // Cek user dengan role 'pemilik'
+        $user = \DB::table('user')
+            ->join('role_user', 'user.iduser', '=', 'role_user.iduser')
+            ->join('role', 'role_user.idrole', '=', 'role.idrole')
+            ->where('user.iduser', $request->iduser)
+            ->where('role.nama_role', 'pemilik')
+            ->select('user.*')
             ->first();
         if (!$user) {
             return back()->withErrors(['iduser' => 'User yang dipilih bukan role pemilik'])->withInput();
         }
 
-        Pemilik::create([
+        \DB::table('pemilik')->insert([
             'no_wa' => $request->no_wa,
             'alamat' => $request->alamat,
             'iduser' => $user->iduser,
@@ -91,13 +103,19 @@ class PemilikController extends Controller
 
     public function edit($id)
     {
-        $item = Pemilik::findOrFail($id);
+        $item = \DB::table('pemilik')
+            ->leftJoin('user', 'pemilik.iduser', '=', 'user.iduser')
+            ->select('pemilik.*', 'user.nama as nama_user', 'user.email as email_user')
+            ->where('pemilik.idpemilik', $id)
+            ->first();
+        if (!$item) {
+            abort(404);
+        }
         return view('admin.pemilik.update', compact('item'));
     }
 
     public function update(Request $request, $id)
     {
-    // dd($request->all());
         $request->validate([
             'nama_pemilik' => 'required|string|max:255',
             'no_wa' => 'required|string|max:20',
@@ -107,9 +125,11 @@ class PemilikController extends Controller
             'no_wa.required' => 'No WhatsApp wajib diisi.',
             'alamat.required' => 'Alamat wajib diisi.',
         ]);
-        $item = Pemilik::findOrFail($id);
-        $user = $item->user;
-        $item->update([
+        $item = \DB::table('pemilik')->where('idpemilik', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
+        \DB::table('pemilik')->where('idpemilik', $id)->update([
             'no_wa' => $request->no_wa,
             'alamat' => $request->alamat,
         ]);
@@ -118,9 +138,12 @@ class PemilikController extends Controller
 
     public function destroy($id)
     {
-    $item = Pemilik::findOrFail($id);
-    $item->delete();
-    return redirect()->route('pemilik.index')->with('success', 'Pemilik berhasil dihapus.');
+        $item = \DB::table('pemilik')->where('idpemilik', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
+        \DB::table('pemilik')->where('idpemilik', $id)->delete();
+        return redirect()->route('pemilik.index')->with('success', 'Pemilik berhasil dihapus.');
     }
         
 }

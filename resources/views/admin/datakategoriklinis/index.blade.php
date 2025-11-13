@@ -1,11 +1,9 @@
-
-@extends('Layouts.app')
-
+@extends('Layouts.lte.main')
 @section('content')
 <div class="page-section">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2 style="color: #319da7;"><i class="fas fa-stethoscope"></i> Manajemen Data Kategori Klinis</h2>
-        <a href="{{ route('kategori-klinis.create') }}" class="btn btn-success" style="border-radius: 8px; font-weight: 600; background: #2ecc71;">
+        <a href="{{ route('kategori-klinis.create') }}" class="btn btn-success" style="border-radius: 8px; font-weight: 600; background: #b2f1f7ff;">
             <i class="fas fa-plus"></i> Tambah Kategori Klinis
         </a>
     </div>

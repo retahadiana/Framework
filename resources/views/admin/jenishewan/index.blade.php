@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 
 @section('content')
 <style>

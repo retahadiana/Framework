@@ -14,7 +14,7 @@ class KategoriKlinisController extends Controller
 
     public function index()
     {
-        $data = KategoriKlinis::all();
+        $data = \DB::table('kategori_klinis')->get();
         return view('admin.datakategoriklinis.index', compact('data'));
     }
 
@@ -39,8 +39,8 @@ class KategoriKlinisController extends Controller
     protected function createKategoriKlinis(array $data)
     {
         try {
-            return KategoriKlinis::create([
-                'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($data['nama_kategori_klinis']),
+            return \DB::table('kategori_klinis')->insert([
+                'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($data['nama_kategori_klinis'])
             ]);
         } catch (\Exception $e) {
             throw new \Exception('Gagal menyimpan data kategori klinis: ' . $e->getMessage());
@@ -63,14 +63,17 @@ class KategoriKlinisController extends Controller
     public function store(Request $request)
     {
         $validatedData = $this->validateKategoriKlinis($request);
-        $kategoriKlinis = $this->createKategoriKlinis($validatedData);
+        $this->createKategoriKlinis($validatedData);
         return redirect()->route('kategori-klinis.index')->with('success', 'Kategori klinis berhasil ditambahkan.');
     }
 
     // Tampilkan form edit
     public function edit($id)
     {
-        $kategoriKlinis = KategoriKlinis::findOrFail($id);
+        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->first();
+        if (!$kategoriKlinis) {
+            abort(404);
+        }
         return view('admin.datakategoriklinis.update', compact('kategoriKlinis'));
     }
 
@@ -78,9 +81,8 @@ class KategoriKlinisController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $this->validateKategoriKlinis($request, $id);
-        $kategoriKlinis = KategoriKlinis::findOrFail($id);
-        $kategoriKlinis->update([
-            'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($validatedData['nama_kategori_klinis']),
+        \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->update([
+            'nama_kategori_klinis' => $this->formatNamaKategoriKlinis($validatedData['nama_kategori_klinis'])
         ]);
         return redirect()->route('kategori-klinis.index')->with('success', 'Kategori klinis berhasil diupdate.');
     }
@@ -88,15 +90,17 @@ class KategoriKlinisController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kategoriKlinis = KategoriKlinis::findOrFail($id);
+        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->first();
+        if (!$kategoriKlinis) {
+            abort(404);
+        }
         return view('admin.datakategoriklinis.delete', compact('kategoriKlinis'));
     }
 
     // Hapus data
     public function destroy($id)
     {
-        $kategoriKlinis = KategoriKlinis::findOrFail($id);
-        $kategoriKlinis->delete();
+        \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->delete();
         return redirect()->route('kategori-klinis.index')->with('success', 'Kategori klinis berhasil dihapus.');
     }
 }

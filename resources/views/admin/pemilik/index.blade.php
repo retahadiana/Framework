@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 
 @section('content')
 <style>
@@ -116,8 +116,8 @@
                 @foreach ($data as $item)
                 <tr>
                     <td>{{ $item->idpemilik }}</td>
-                    <td>{{ $item->user->nama ?? $item->nama_pemilik }}</td>
-                    <td>{{ $item->user->email ?? '-' }}</td>
+                    <td>{{ $item->nama_user ?? '-' }}</td>
+                    <td>{{ $item->email_user ?? '-' }}</td>
                     <td>{{ $item->no_wa }}</td>
                     <td>{{ $item->alamat }}</td>
                     <td>

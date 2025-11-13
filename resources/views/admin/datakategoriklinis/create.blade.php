@@ -1,5 +1,4 @@
-
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 @section('content')
 <div class="page-section" style="background: #f6f9fb; min-height: 100vh;">
     <div class="card" style="background: #fff; border-radius: 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); padding: 40px 32px; max-width: 480px; margin: 60px auto;">

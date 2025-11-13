@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 @section('content')
 <div class="page-section">
     <h2><i class="fas fa-heart"></i> Edit Pet</h2>
@@ -41,7 +41,7 @@
                 <label for="idpemilik">Pemilik</label>
                 <select name="idpemilik" class="form-control @error('idpemilik') is-invalid @enderror">
                     @foreach($pemilik as $p)
-                        <option value="{{ $p->idpemilik }}" {{ old('idpemilik', $item->idpemilik) == $p->idpemilik ? 'selected' : '' }}>{{ $p->user->nama ?? $p->user->name }}</option>
+                        <option value="{{ $p->idpemilik }}" {{ old('idpemilik', $item->idpemilik) == $p->idpemilik ? 'selected' : '' }}>{{ $p->nama_pemilik ?? '-' }}</option>
                     @endforeach
                 </select>
                 @error('idpemilik')

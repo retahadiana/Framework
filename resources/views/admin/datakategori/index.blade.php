@@ -1,6 +1,4 @@
-
-@extends('Layouts.app')
-
+@extends('Layouts.lte.main')
 @section('content')
 <div class="page-section">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">

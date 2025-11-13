@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 @section('content')
 <div class="page-section">
     <h2><i class="fas fa-heart"></i> Hapus Pet</h2>

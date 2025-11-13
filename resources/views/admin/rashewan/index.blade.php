@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 
 @section('content')
 <style>
@@ -136,10 +136,10 @@
                     $jenisList = $data->groupBy('idjenis_hewan');
                 @endphp
                 @foreach ($jenisList as $idjenis => $rasList)
-                    @php $jenis = $rasList->first()->jenisHewan; @endphp
+                    @php $first = $rasList->first(); @endphp
                     <tr>
-                        <td>{{ $jenis->idjenis_hewan ?? '-' }}</td>
-                        <td>{{ $jenis->nama_jenis_hewan ?? '-' }}</td>
+                        <td>{{ $first->idjenis_hewan ?? '-' }}</td>
+                        <td>{{ $first->nama_jenis_hewan ?? '-' }}</td>
                         <td>
                             <ul style="margin:0;padding-left:18px;">
                                 @foreach ($rasList as $ras)

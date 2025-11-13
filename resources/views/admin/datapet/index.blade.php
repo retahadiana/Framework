@@ -1,5 +1,5 @@
 
-@extends('Layouts.app')
+@extends('Layouts.lte.main')
 
 @section('content')
 <style>
@@ -92,17 +92,13 @@
                         <td>{{ $item->idpet }}</td>
                         <td>{{ $item->nama ?? $item->nama ?? '-' }}</td>
                         <td>
-                            @if(isset($item->rasHewan->jenisHewan))
-                                {{ $item->rasHewan->jenisHewan->nama_jenis_hewan }}
-                            @else
-                                {{ $item->jenis ?? '-' }}
-                            @endif
+                            {{ $item->nama_jenis_hewan ?? '-' }}
                         </td>
                         <td>{{ $item->jenis_kelamin }}</td>
                         <td>{{ $item->tanggal_lahir }}</td>
                         <td>{{ $item->warna_tanda }}</td>
-                        <td>{{ $item->rasHewan->nama_ras ?? '-' }}</td>
-                        <td>{{ data_get($item, 'pemilik.user.nama') ?? data_get($item, 'pemilik.user.name') ?? '-' }}</td>
+                        <td>{{ $item->nama_ras ?? '-' }}</td>
+                        <td>{{ $item->nama_pemilik ?? '-' }}</td>
                         <td>
                             <a href="{{ route('pet.edit', $item->idpet) }}" class="pet-action-link">Edit</a>
                             <form action="{{ route('pet.destroy', $item->idpet) }}" method="POST" style="display:inline;">

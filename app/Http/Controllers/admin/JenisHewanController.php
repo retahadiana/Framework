@@ -8,9 +8,10 @@ use App\Models\JenisHewan;
 
 class JenisHewanController extends Controller
 {
+
     public function index()
     {
-        $data = JenisHewan::all();
+        $data = \DB::table('jenis_hewan')->select('idjenis_hewan', 'nama_jenis_hewan')->get();
         return view('admin.jenishewan.index', compact('data'));
     }
 
@@ -38,32 +39,33 @@ class JenisHewanController extends Controller
     public function store(\Illuminate\Http\Request $request)
     {
         $validated = $this->validateJenisHewan($request);
-        JenisHewan::create([
-            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan']),
+        \DB::table('jenis_hewan')->insert([
+            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan'])
         ]);
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $item = JenisHewan::findOrFail($id);
+        $item = \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->first();
+        if (!$item) {
+            abort(404);
+        }
         return view('admin.jenishewan.update', compact('item'));
     }
 
     public function update(\Illuminate\Http\Request $request, $id)
     {
         $validated = $this->validateJenisHewan($request);
-        $item = JenisHewan::findOrFail($id);
-        $item->update([
-            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan']),
+        \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->update([
+            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan'])
         ]);
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil diupdate.');
     }
 
     public function destroy($id)
     {
-        $item = JenisHewan::findOrFail($id);
-        $item->delete();
+        \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->delete();
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil dihapus.');
     }
 }

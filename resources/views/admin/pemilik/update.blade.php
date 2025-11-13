@@ -77,18 +77,18 @@
 	<div class="pemilik-create-card">
 		<div class="pemilik-create-title" style="margin-bottom:18px;">Edit Data Pemilik</div>
 		<div style="font-size:1.1rem; margin-bottom:18px; text-align:left; color:#1a3365;">
-			Mengedit data untuk: <b>{{ $item->user->nama ?? $item->nama_pemilik }}</b>
+			Mengedit data untuk: <b>{{ $item->nama_user ?? '-' }}</b>
 		</div>
 		<form action="{{ route('pemilik.update', $item->idpemilik) }}" method="POST" style="text-align:left;">
 			@csrf
 			@method('PUT')
 			<label for="nama_pemilik" class="pemilik-create-label">Nama</label>
-			<input type="text" name="nama_pemilik" class="pemilik-create-input @error('nama_pemilik') is-invalid @enderror" value="{{ old('nama_pemilik', $item->user->nama ?? $item->nama_pemilik) }}" readonly>
+			<input type="text" name="nama_pemilik" class="pemilik-create-input @error('nama_pemilik') is-invalid @enderror" value="{{ old('nama_pemilik', $item->nama_user ?? '-') }}" readonly>
 			@error('nama_pemilik')
 				<div class="invalid-feedback" style="color:#e74c3c;text-align:left;margin-bottom:10px;">{{ $message }}</div>
 			@enderror
 			<label for="email" class="pemilik-create-label">Email</label>
-			<input type="text" name="email" class="pemilik-create-input" value="{{ $item->user->email ?? '-' }}" readonly>
+			<input type="text" name="email" class="pemilik-create-input" value="{{ $item->email_user ?? '-' }}" readonly>
 			<label for="no_wa" class="pemilik-create-label">Nomor WhatsApp</label>
 			<input type="text" name="no_wa" class="pemilik-create-input @error('no_wa') is-invalid @enderror" value="{{ old('no_wa', $item->no_wa) }}">
 			@error('no_wa')
