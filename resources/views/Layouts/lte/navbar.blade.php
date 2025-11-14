@@ -1,89 +1,64 @@
-<header>
-    <div class="header-top">
-        <div class="container @if(auth()->check() && in_array(strtolower(session('user_role_name', '')), ['administrator','dokter'])) admin-header @endif">
-                    @if(auth()->check() && strtolower(session('user_role_name', '')) === 'administrator')
-                        <div class="logo" style="display:inline-block;float:left;">
-                            <a href="{{ route('dashboard.admin') }}">
-                                <img src="https://rshp.unair.ac.id/wp-content/uploads/2024/06/UNIVERSITAS-AIRLANGGA-scaled.webp" alt="Logo RSHP" style="max-height:56px;">
-                            </a>
-                        </div>
-                    @endif
-                <nav>
-                    {{-- Role-specific navbar: admin or dokter --}} 
-                    @if(auth()->check() && in_array(strtolower(session('user_role_name', '')), ['administrator','dokter'])) 
-                        @php $role = strtolower(session('user_role_name', '')); @endphp
-                        <ul class="admin-nav">
-                            <li style="color:rgba(255,255,255,0.95);font-weight:600">Selamat datang, {{ ucfirst($role) }}</li>
+<nav class="app-header navbar navbar-expand bg-body">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                    <i class="bi bi-list"></i>
+                </a>
+            </li>
+            <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Home</a></li>
+            <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Contact</a></li>
+        </ul>
 
-                            @if($role === 'administrator')
-                                @if(Route::has('dashboard'))
-                                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                                @endif
-                                @if(Route::has('dashboard.admin'))
-                                    <li><a href="{{ route('dashboard.admin') }}">Data Master</a></li>
-                                @endif
-                                @if(Route::has('layanan.index'))
-                                    <li><a href="{{ route('layanan.index') }}">Layanan</a></li>
-                                @endif
-                            @elseif($role === 'dokter')
-                                @if(Route::has('dashboard'))
-                                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                                @endif
-                                @if(Route::has('dokter.rekam_medis.index'))
-                                    <li><a href="{{ route('dokter.rekam_medis.index') }}">Rekam Medis</a></li>
-                                @endif
-                                @if(Route::has('dokter.kode_tindakan_terapi.index'))
-                                    <li><a href="{{ route('dokter.kode_tindakan_terapi.index') }}">Kode Tindakan</a></li>
-                                @endif
-                                <li><a href="{{ url('/dokter/resep-obat') }}">Resep Obat</a></li>
-                                <li><a href="{{ url('/dokter/pasien') }}">Data Pasien</a></li>
-                            @endif
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="navbar-search" href="#">
+                    <i class="bi bi-search"></i>
+                </a>
+            </li>
 
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                                    @csrf
-                                    <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;margin:0;font:inherit">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    @else
-                        <ul>
-                            <!-- Icon navigasi utama -->
-                            <li>
-                                <a href="{{ auth()->check() ? route('dashboard') : route('home') }}">
-                                    <i class="fas fa-home"></i> Home
-                                </a>
-                            </li>
-                            <li><a href="{{ url('/struktur-organisasi') }}"><i class="fas fa-users"></i> Struktur Organisasi</a></li>
-                            <li><a href="{{ url('/layanan') }}"><i class="fas fa-stethoscope"></i> Layanan Umum</a></li>
-                            <li><a href="{{ url('/visi-misi') }}"><i class="fas fa-bullseye"></i> Visi Misi dan Tujuan</a></li>
-                            <li><a href="{{ url('/kontak') }}"><i class="fas fa-phone"></i> Kontak</a></li>
-                            @guest
-                                <li><a href="{{ route('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                            @endguest
-                            @auth
-                                <li><a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') }}" style="display:inline">
-                                        @csrf
-                                        <button type="submit" style="background:none;border:none;color:inherit;cursor:pointer;padding:0;margin:0;font:inherit">
-                                            <i class="fas fa-sign-out-alt"></i> Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            @endauth
-                        </ul>
-                    @endif
-                </nav>
-            </div>
-        </div>
-        
-        <!-- Logo RSHP UNAIR -->
-        @unless(auth()->check() && in_array(strtolower(session('user_role_name', '')), ['administrator','dokter']))
-        <div class="header-middle">
-            <div class="logo">
-                <img src="https://rshp.unair.ac.id/wp-content/uploads/2024/06/UNIVERSITAS-AIRLANGGA-scaled.webp" alt="Logo RSHP">
-            </div>
-        </div>
-        @endunless
-    </header>
+            {{-- Messages --}}
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#">
+                    <i class="bi bi-chat-text"></i>
+                    <span class="navbar-badge badge text-bg-danger">3</span>
+                </a>
+                @include('layouts.components.messages')
+            </li>
+
+            {{-- Notifications --}}
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="navbar-badge badge text-bg-warning">15</span>
+                </a>
+                @include('layouts.components.notifications')
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-lte-toggle="fullscreen">
+                    <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
+                    <i data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
+                </a>
+            </li>
+
+            {{-- Quick logout button --}}
+            <li class="nav-item">
+                <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                    @csrf
+                    <button type="submit" class="nav-link btn btn-link p-0" style="border:0; background:transparent; color:inherit;">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </li>
+
+            {{-- User Menu --}}
+            <li class="nav-item dropdown user-menu">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <span class="d-none d-md-inline">Admin</span>
+                </a>
+                @include('layouts.components.user-menu')
+            </li>
+        </ul>
+    </div>
+</nav>

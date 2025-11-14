@@ -1,143 +1,3 @@
-/* ==================== MODERN ADMIN SIDEBAR ==================== */
-.app-sidebar {
-    width: 270px;
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-    --tw-bg-opacity: 0.72;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.85) 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-xl);
-    padding-top: 1rem;
-    overflow-y: auto;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-
-.app-sidebar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 20% 80%, rgba(8, 145, 178, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.app-sidebar > * {
-    position: relative;
-    z-index: 1;
-}
-
-/* Brand (Logo bagian atas) */
-.sidebar-brand {
-    padding: 1.5rem 1rem;
-    text-align: center;
-}
-.sidebar-brand img {
-    width: 55px;
-    opacity: 0.9;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-    transition: 0.3s ease;
-}
-.sidebar-brand img:hover {
-    transform: scale(1.08);
-    opacity: 1;
-}
-.sidebar-brand .brand-text {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--primary-teal-light);
-    letter-spacing: 1px;
-    margin-top: 0.75rem;
-    display: block;
-}
-
-/* Menu Wrapper */
-.sidebar-wrapper {
-    padding: 0 0.5rem;
-}
-
-/* Setiap item menu */
-.sidebar-menu li a {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.90rem 1.25rem;
-    margin: 0.25rem 0;
-    color: var(--neutral-200);
-    font-size: 0.97rem;
-    font-weight: 500;
-    border-radius: var(--border-radius-md);
-    transition: all 0.25s ease;
-}
-
-/* Ikon menu */
-.sidebar-menu li a i {
-    font-size: 1.1rem;
-    opacity: 0.85;
-    transition: 0.25s ease;
-}
-
-/* Hover */
-.sidebar-menu li a:hover {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-    transform: translateX(8px);
-    color: var(--white);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.sidebar-menu li a:hover i {
-    color: var(--primary-teal-light);
-    transform: scale(1.2);
-    text-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
-}
-
-/* Active */
-.sidebar-menu .active {
-    background: linear-gradient(90deg, var(--primary-teal), var(--primary-teal-dark));
-    color: var(--white) !important;
-    box-shadow: 0 4px 14px rgba(0, 200, 255, 0.25);
-    transform: translateX(4px);
-    border-left: 4px solid var(--primary-teal-light);
-}
-.sidebar-menu .active i {
-    color: var(--white) !important;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-}
-
-/* Submenu */
-.nav-treeview {
-    margin-left: 1.5rem;
-    border-left: 2px solid rgba(255,255,255,0.08);
-    padding-left: 0.6rem;
-    margin-bottom: 0.5rem;
-}
-.nav-treeview li a {
-    font-size: 0.88rem;
-    padding: 0.55rem 1rem;
-    border-radius: var(--border-radius-sm);
-}
-
-/* Title (HEADER) */
-.nav-header {
-    padding: 1rem 1.2rem 0.5rem 1.2rem;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--neutral-400);
-    font-weight: 700;
-    opacity: 0.75;
-}
-
-/* Divider untuk visual rapih */
-.sidebar-divider {
-    height: 1px;
-    background: rgba(255,255,255,0.08);
-    margin: 1rem 0;
-}
-
 /* ==================== MODERN CSS VARIABLES ==================== */
         :root {
             /* Updated color palette */
@@ -391,7 +251,7 @@
         /* Enhanced section headers with icons */
         .page-section h2::before {
             content: '';
-            width: 4px;
+             width: 4px;
             height: 3rem;
             background: linear-gradient(180deg, var(--accent-orange), var(--primary-teal));
             border-radius: 2px;
@@ -899,4 +759,201 @@
             transform: scaleX(0);
             z-index: 9999;
             transition: transform 0.3s ease;
+        }
+
+                /* ==================== MODERN ADMIN SIDEBAR ==================== */
+
+
+        /* Ensure sidebar children render above decorative pseudo element */
+        .app-sidebar > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .app-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(8, 145, 178, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-sidebar > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Brand (Logo bagian atas) */
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin: 1rem 0;
+        }
+
+/* ==================== FINAL SIDEBAR OVERRIDES (Card-style) ==================== */
+aside.app-sidebar, .app-sidebar {
+    width: 260px;
+    background: var(--white) !important;
+    color: var(--neutral-800) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 8px 32px rgba(16,40,50,0.13) !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 1.2rem 0.7rem 1.2rem 0.7rem !important;
+    margin: 1.5rem 1rem !important;
+    position: relative !important;
+    overflow: visible !important;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    transition: box-shadow 0.2s;
+}
+
+/* Make sure pseudo decorations sit under the card */
+aside.app-sidebar::before { display: none; }
+aside.app-sidebar > *, .app-sidebar > * { position: relative; z-index: 2; }
+
+/* Brand */
+aside.app-sidebar .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.6rem 1.1rem 0.6rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+aside.app-sidebar .sidebar-brand img {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #f8fafc;
+    box-shadow: 0 2px 8px rgba(16,40,50,0.07);
+}
+aside.app-sidebar .brand-text {
+    display: inline-block;
+    margin-left: 0.6rem;
+    font-weight: 800;
+    color: var(--neutral-800);
+    font-size: 1.18rem;
+    letter-spacing: 0.5px;
+}
+
+/* Menu list like example: compact, light icons, pill active */
+
+aside.app-sidebar .sidebar-menu {
+    padding: 0.3rem 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+aside.app-sidebar .sidebar-menu li {
+    margin: 0.18rem 0;
+}
+aside.app-sidebar .sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.78rem 1.1rem;
+    color: var(--neutral-700);
+    border-radius: 12px;
+    background: transparent;
+    font-size: 1.04rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    box-shadow: none;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    position: relative;
+}
+aside.app-sidebar .sidebar-menu li a i {
+    font-size: 1.18rem;
+    color: var(--neutral-400);
+    min-width: 26px;
+    text-align: center;
+    transition: color 0.18s;
+}
+aside.app-sidebar .sidebar-menu li a p {
+    margin: 0;
+    font-size: 1.01rem;
+    font-weight: 500;
+}
+aside.app-sidebar .sidebar-menu li a:hover {
+    background: linear-gradient(90deg, #e0f2fe 0%, #f0fdff 100%);
+    color: var(--primary-teal);
+    box-shadow: 0 2px 8px rgba(6,182,212,0.07);
+}
+aside.app-sidebar .sidebar-menu li a:hover i {
+    color: var(--primary-teal);
+}
+
+/* Active pill */
+aside.app-sidebar .sidebar-menu .active {
+    background: linear-gradient(90deg, #e0f2fe 60%, #ccfbf1 100%);
+    color: var(--primary-teal-dark) !important;
+    box-shadow: 0 4px 16px rgba(6,182,212,0.10);
+    font-weight: 700;
+    border-left: 4px solid var(--primary-teal);
+    position: relative;
+    z-index: 1;
+}
+aside.app-sidebar .sidebar-menu .active i {
+    color: var(--primary-teal-dark) !important;
+}
+
+/* Subtle separators removed to match example clean look */
+/* no extra separators */
+
+/* Responsive: on small screens reduce width and show icons-only when collapsed */
+@media (max-width: 900px) {
+    aside.app-sidebar {
+        width: 68px !important;
+        padding: 0.4rem !important;
+        margin: 0.6rem !important;
+        min-width: 0;
+    }
+    .brand-text { display: none; }
+    aside.app-sidebar .sidebar-menu li a p { display: none; }
+    aside.app-sidebar .sidebar-menu li a {
+        justify-content: center;
+        padding: 0.8rem 0.4rem;
+    }
+}
+
+
+        /* Duplicate sidebar rules removed — final card-style rules above apply */
+
+        /* Submenu */
+        .nav-treeview {
+            margin-left: 1.5rem;
+            border-left: 2px solid rgba(255,255,255,0.08);
+            padding-left: 0.6rem;
+            margin-bottom: 0.5rem;
+        }
+        .nav-treeview li a {
+            font-size: 0.88rem;
+            padding: 0.55rem 1rem;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Title (HEADER) */
+        .nav-header {
+            padding: 1rem 1.2rem 0.5rem 1.2rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--neutral-400);
+            font-weight: 700;
+            opacity: 0.75;
+        }
+
+        /* Divider untuk visual rapih */
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin: 1rem 0;
         }

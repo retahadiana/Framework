@@ -1,32 +1,44 @@
-<!-- main.blade.php -->
-<!DOCTYPE html>
-<html lang="id">
+<!doctype html>
+<html lang="en">
+
 @include('Layouts.lte.head')
-<body>
-	<div class="scroll-indicator" id="scrollIndicator"></div>
-	<div style="display:flex;min-height:100vh;">
-		@include('Layouts.lte.sidebar')
-		<div style="flex:1;display:flex;flex-direction:column;min-height:100vh;">
-			<header>
-				@include('Layouts.lte.navbar')
-			</header>
-			<main style="flex:1;padding:2rem 2.5rem;">
-				@yield('content')
-			</main>
-			@include('Layouts.lte.footer')
-		</div>
-	</div>
-	<script>
-		window.onscroll = function() {
-			const scrollIndicator = document.getElementById("scrollIndicator");
-			const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-			const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-			const scrolled = (winScroll / height) * 100;
-			if (scrollIndicator) {
-				scrollIndicator.style.transform = `scaleX(${scrolled / 100})`;
-			}
-		};
-	</script>
-	@stack('scripts')
+
+<body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
+    <div class="app-wrapper">
+
+        @include('Layouts.lte.navbar')
+        @include('Layouts.lte.sidebar')
+
+        <main class="app-main">
+            <div class="app-content-header">
+                <div class="container-fluid">
+                    <h3 class="mb-0">@yield('page-title', 'Dashboard')</h3>
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">@yield('page-title')</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="app-content">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+            </div>
+        </main>
+
+        @include('Layouts.lte.footer')
+
+    </div>
+
+    <!-- Required JS -->
+    <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('build/assets/js/adminlte.min.js') }}"></script>
+
+    @stack('scripts')
+
 </body>
+
 </html>

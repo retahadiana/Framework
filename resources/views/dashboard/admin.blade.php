@@ -1,115 +1,151 @@
 @extends('Layouts.lte.main')
 
 @section('content')
-<div class="container mt-4">
-    <h1 class="fw-bold text-primary">Selamat datang di Dashboard Admin</h1>
-    <p class="text-muted">Halo, {{ auth()->user()->email }}!</p>
-
-    <div class="data-master-section mt-4">
-        <h5 class="card-title text-primary mb-3" style="font-size:1.3rem;font-weight:700;">Data Master</h5>
-        <div class="data-master-grid">
-            <a href="{{ route('user.index') }}" class="data-master-card">
-                <i class="fas fa-users"></i>
-                <span>Data User</span>
-            </a>
-            <a href="{{ route('role.index') }}" class="data-master-card">
-                <i class="fas fa-user-shield"></i>
-                <span>Manajemen Role</span>
-            </a>
-            <a href="{{ route('jenis-hewan.index') }}" class="data-master-card">
-                <i class="fas fa-dog"></i>
-                <span>Jenis Hewan</span>
-            </a>
-            <a href="{{ route('ras-hewan.index') }}" class="data-master-card">
-                <i class="fas fa-paw"></i>
-                <span>Ras Hewan</span>
-            </a>
-            <a href="{{ route('pemilik.index') }}" class="data-master-card">
-                <i class="fas fa-address-card"></i>
-                <span>Data Pemilik</span>
-            </a>
-            <a href="{{ route('pet.index') }}" class="data-master-card">
-                <i class="fas fa-cat"></i>
-                <span>Data Pet</span>
-            </a>
-            <a href="{{ route('kategori.index') }}" class="data-master-card">
-                <i class="fas fa-tags"></i>
-                <span>Data Kategori</span>
-            </a>
-            <a href="{{ route('kategori-klinis.index') }}" class="data-master-card">
-                <i class="fas fa-clinic-medical"></i>
-                <span>Data Kategori Klinik</span>
-            </a>
-            <a href="{{ route('kode-tindakan-terapi.index') }}" class="data-master-card">
-                <i class="fas fa-file-medical-alt"></i>
-                <span>Data Kode Tindakan</span>
-            </a>
+<div class="container-fluid py-3">
+    <div class="row mb-4">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info shadow-sm">
+                <div class="inner">
+                    <h3>10</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <a href="{{ route('user.index') }}" class="small-box-footer">More info <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success shadow-sm">
+                <div class="inner">
+                    <h3>5</h3>
+                    <p>Registered Pets</p>
+                </div>
+                <div class="icon"><i class="bi bi-clipboard-data"></i></div>
+                <a href="{{ route('pet.index') }}" class="small-box-footer">More info <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning shadow-sm">
+                <div class="inner">
+                    <h3>7</h3>
+                    <p>Appointments</p>
+                </div>
+                <div class="icon"><i class="bi bi-calendar-event"></i></div>
+                <a href="#" class="small-box-footer">More info <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger shadow-sm">
+                <div class="inner">
+                    <h3>6</h3>
+                    <p>Medical Records</p>
+                </div>
+                <div class="icon"><i class="bi bi-file-earmark-medical"></i></div>
+                <a href="{{ Route::has('rekam_medis.index') ? route('rekam_medis.index') : url('admin/datarekammedis') }}" class="small-box-footer">More info <i class="bi bi-arrow-right-circle"></i></a>
+            </div>
         </div>
     </div>
-    <style>
-        .data-master-section {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
-            padding: 32px 24px 32px 24px;
-            margin: 0 auto 32px auto;
-            max-width: 1200px;
-        }
-        .data-master-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 28px;
-            margin-top: 18px;
-        }
-        .data-master-card {
-            background: #f6fbfd;
-            border-radius: 16px;
-            box-shadow: 0 1px 4px rgba(44, 62, 80, 0.06);
-            padding: 36px 0 24px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #2996a7;
-            font-weight: 700;
-            font-size: 1.18rem;
-            transition: box-shadow 0.2s, background 0.2s, color 0.2s;
-            border: 2px solid #e0f7fa;
-        }
-        .data-master-card:hover {
-            background: #e0f7fa;
-            color: #1677ff;
-            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.13);
-        }
-        .data-master-card i {
-            font-size: 2.7rem;
-            margin-bottom: 18px;
-            color: #2996a7;
-            transition: color 0.2s;
-        }
-        .data-master-card:hover i {
-            color: #1677ff;
-        }
-        .data-master-card span {
-            display: block;
-            margin-top: 2px;
-        }
-        @media (max-width: 700px) {
-            .data-master-section {
-                padding: 16px 4px;
+    <div class="row mb-4">
+        <div class="col-lg-8 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0 fw-bold">Activity Overview</div>
+                <div class="card-body">
+                    <canvas id="activityChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-3">
+            <div class="card shadow-sm border-0 h-100 mb-3">
+                <div class="card-header bg-white border-0 fw-bold">Quick Actions</div>
+                <div class="card-body">
+                    <a href="#" class="btn btn-outline-primary w-100 mb-2">Tambah User</a>
+                    <a href="#" class="btn btn-outline-success w-100 mb-2">Tambah Pet</a>
+                    <a href="#" class="btn btn-outline-warning w-100">Tambah Tindakan</a>
+                </div>
+            </div>
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-0 fw-bold">Recent Users</div>
+                <div class="card-body p-0">
+                    <div class="table-responsive" style="max-height:220px; overflow:auto;">
+                        <table class="table mb-0">
+                        <thead>
+                            <tr><th>Name</th><th>Email</th></tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($recentUsers) && $recentUsers->count())
+                                @foreach($recentUsers as $u)
+                                    <tr>
+                                        <td>{{ $u->nama }}</td>
+                                        <td>{{ $u->email ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr><td colspan="2">No recent users found</td></tr>
+                            @endif
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</style>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctxEl = document.getElementById('activityChart');
+    if (ctxEl) {
+        const ctx = ctxEl.getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Visits',
+                        data: [120, 130, 125, 140, 160, 200],
+                        borderColor: '#1677ff',
+                        backgroundColor: 'rgba(22,119,255,0.08)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'New Users',
+                        data: [40, 50, 55, 60, 70, 90],
+                        borderColor: '#2996a7',
+                        backgroundColor: 'rgba(41,150,167,0.08)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true } },
+                scales: { y: { beginAtZero: true } }
             }
-            .data-master-grid {
-                gap: 14px;
-            }
-            .data-master-card {
-                padding: 22px 0 14px 0;
-                font-size: 1rem;
-            }
-            .data-master-card i {
-                font-size: 2rem;
-                margin-bottom: 10px;
-            }
+        });
+    }
+
+    if (typeof jsVectorMap !== 'undefined') {
+        try {
+            new jsVectorMap({
+                selector: "#visitorsMap",
+                map: "world",
+                backgroundColor: "#eaf6ff",
+                regionStyle: { initial: { fill: "#b3dafe" } },
+                markers: [ { name: "Jakarta", coords: [-6.2, 106.8] }, { name: "Surabaya", coords: [-7.25, 112.75] } ]
+            });
+        } catch (e) {
+            console.warn('jsVectorMap init failed', e);
         }
-    </style>
-</div>
+    }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+@endpush
 @endsection
