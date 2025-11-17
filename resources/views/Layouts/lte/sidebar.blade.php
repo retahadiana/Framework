@@ -6,7 +6,7 @@
     <a href="{{ route('dashboard') }}" class="brand-link">
       <!--begin::Brand Image-->
       <img
-        src="{{ asset('assets/img/AdminLTELogo.png') }}"
+        src="{{ asset('https://ftmm.unair.ac.id/wp-content/uploads/filr/13875/Logo%20UNAIR.png') }}"
         alt="RSHP Logo"
         class="brand-image opacity-75 shadow"
       />
