@@ -146,11 +146,11 @@
                                     <li style="margin-bottom:4px;">
                                         {{ $ras->nama_ras }}
                                         <span class="aksi-btn">
-                                            <a href="{{ route('ras-hewan.edit', $ras->idras_hewan) }}" class="btn-update">Update</a>
+                                            <a href="{{ route('ras-hewan.edit', $ras->idras_hewan) }}" class="btn-update">Edit</a>
                                             <form action="{{ route('ras-hewan.destroy', $ras->idras_hewan) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus ras ini?')">Delete</button>
+                                                <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus ras ini?')">Hapus</button>
                                             </form>
                                         </span>
                                     </li>

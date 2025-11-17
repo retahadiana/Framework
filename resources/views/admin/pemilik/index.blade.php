@@ -1,6 +1,8 @@
 @extends('Layouts.lte.main')
 
 @section('content')
+@include('partials.table-standard')
+@include('partials.action-buttons')
 <style>
     .pemilik-card {
         max-width: 1200px;
@@ -19,29 +21,8 @@
         margin-top: 32px;
         text-align: left;
         margin-left: 32px;
-    }
-    .pemilik-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-    }
-    .pemilik-table th {
-        background: #43b0c1;
-        color: #fff;
-        font-weight: 700;
-        padding: 16px 0;
-        text-align: left;
-        font-size: 1.1rem;
-    }
-    .pemilik-table th, .pemilik-table td {
-        padding-left: 32px;
-        padding-right: 32px;
-    }
-    .pemilik-table td {
-        padding: 14px 0;
-        border-bottom: 1px solid #e0e0e0;
-        font-size: 1.08rem;
-    }
+        }
+    /* table styling provided by partial: table-standard */
     .aksi-btn {
         display: flex;
         gap: 8px;
@@ -98,10 +79,10 @@
 </style>
 <div style="background: #f6fbfd; min-height: 100vh; padding-top: 40px;">
     <div class="pemilik-title">Manajemen Data Pemilik
-        <a href="{{ route('pemilik.create') }}" class="btn-tambah-pemilik">&#43; Tambah Pemilik</a>
+        <a href="{{ route('pemilik.create') }}" class="btn-tambah-pemilik action-create">&#43; Tambah Pemilik</a>
     </div>
     <div class="pemilik-card">
-        <table class="pemilik-table">
+        <table class="table-standard">
             <thead>
                 <tr>
                     <th>ID Pemilik</th>
@@ -122,11 +103,11 @@
                     <td>{{ $item->alamat }}</td>
                     <td>
                         <div class="aksi-btn">
-                            <a href="{{ route('pemilik.edit', $item->idpemilik) }}" class="btn-edit">Edit</a>
+                            <a href="{{ route('pemilik.edit', $item->idpemilik) }}" class="action-edit">Edit</a>
                             <form action="{{ route('pemilik.destroy', $item->idpemilik) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus pemilik ini?')">Hapus</button>
+                                <button type="submit" class="action-delete" style="background:none;border:none;padding:0;margin:0;cursor:pointer;font-weight:600;" onclick="return confirm('Yakin ingin menghapus pemilik ini?')">Hapus</button>
                             </form>
                         </div>
                     </td>

@@ -2,10 +2,9 @@
     <div class="float-end d-none d-sm-inline">Anything you want</div>
 
     <strong>
-        Copyright &copy;
-        <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>
-        2014-2025.
-    </strong> All rights reserved.
+        RSHP
+        <a href="https://adminlte.io" class="text-decoration-none">Rumah Sakit Hewan</a>
+    </strong> Universitas Airlangga.
 </footer>
 
 @stack('scripts')
