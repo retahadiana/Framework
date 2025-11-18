@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 
-@include('Layouts.lte.Dokter.head')
+@include('Layouts.lte.perawat.head')
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
     <div class="app-wrapper">
-        @include('Layouts.lte.Dokter.navbar')
-        @include('Layouts.lte.Dokter.sidebar')
+        @include('Layouts.lte.perawat.navbar')
+        @include('Layouts.lte.perawat.sidebar')
 
         <main class="app-main">
             <div class="app-content-header">
@@ -25,7 +25,7 @@
             </div>
         </main>
 
-        @include('Layouts.lte.Dokter.footer')
+        @include('Layouts.lte.perawat.footer')
     </div>
 
     @stack('scripts')

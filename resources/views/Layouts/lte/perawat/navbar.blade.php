@@ -6,7 +6,7 @@
                     <i class="bi bi-list"></i>
                 </a>
             </li>
-            <li class="nav-item d-none d-md-block"><a href="{{ route('dokter.dashboard') }}" class="nav-link">Dashboard</a></li>
+            <li class="nav-item d-none d-md-block"><a href="{{ route('perawat.dashboard') }}" class="nav-link">Dashboard</a></li>
         </ul>
 
         <ul class="navbar-nav ms-auto">

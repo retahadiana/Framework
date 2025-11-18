@@ -19,6 +19,16 @@ class RekamMedis extends Model
     protected $keyType = 'int';
     protected $fillable = ['created_at', 'idpet', 'idpemilik', 'anamnesa', 'temuan_klinis', 'diagnosa', 'idreservasi_dokter', 'dokter_pemeriksa'];
     // public $timestamps = false;
+
+    // This table does not have `updated_at` column; disable Eloquent timestamps
+    public $timestamps = false;
+
+    /**
+     * Ensure created_at is treated as a DateTime/Carbon instance in views
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
     /**
      * Casts to ensure created_at is treated as a DateTime instance in views.
      */

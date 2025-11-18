@@ -130,9 +130,38 @@ Route::middleware(['auth', 'isPerawat'])->group(function () {
         [App\Http\Controllers\perawat\RekamMedisController::class, 'index'])
     ->name('perawat.rekam_medis.index');
 
+    // Create (tambah) form route for perawat — maps to renamed view `detail.blade.php`
+    Route::get('/perawat/rekam-medis/create',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'create'])
+    ->name('perawat.rekam_medis.create');
+
+    // Edit form and update routes for Rekam Medis (perawat)
+    Route::get('/perawat/rekam-medis/{idrekam_medis}/edit',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'edit'])
+    ->name('perawat.rekam_medis.edit');
+
+    Route::put('/perawat/rekam-medis/{idrekam_medis}',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'update'])
+    ->name('perawat.rekam_medis.update');
+
+    // Add show/detail route for Rekam Medis (perawat)
+    Route::get('/perawat/rekam-medis/{idrekam_medis}',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'show'])
+    ->name('perawat.rekam_medis.show');
+
+    // Destroy route for perawat rekam medis (delete)
+    Route::delete('/perawat/rekam-medis/{idrekam_medis}',
+        [App\Http\Controllers\perawat\RekamMedisController::class, 'destroy'])
+    ->name('perawat.rekam_medis.destroy');
+
     Route::get('/perawat/kode-tindakan-terapi',
         [App\Http\Controllers\perawat\KodeTindakanTerapiController::class, 'index'])
     ->name('perawat.kode_tindakan_terapi.index');
+
+        // Store route for perawat rekam medis (handles POST from form)
+        Route::post('/perawat/rekam-medis',
+            [App\Http\Controllers\perawat\RekamMedisController::class, 'store'])
+        ->name('perawat.rekam_medis.store');
 });
 
 Route::middleware(['auth', 'isResepsionis'])->group(function () {
