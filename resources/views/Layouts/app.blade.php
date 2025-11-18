@@ -806,8 +806,8 @@
                                     <li><a href="{{ route('layanan.index') }}">Layanan</a></li>
                                 @endif
                             @elseif($role === 'dokter')
-                                @if(Route::has('dashboard'))
-                                    <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                                @if(Route::has('dokter.dashboard'))
+                                    <li><a href="{{ route('dokter.dashboard') }}">Dashboard</a></  li>
                                 @endif
                                 @if(Route::has('dokter.rekam_medis.index'))
                                     <li><a href="{{ route('dokter.rekam_medis.index') }}">Rekam Medis</a></li>
