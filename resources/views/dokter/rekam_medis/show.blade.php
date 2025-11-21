@@ -172,8 +172,22 @@
                     let m = form.querySelector('input[name="_method"]'); if(m) m.remove();
                 }
                 // set values
-                if(options.kode) selectKode.value = options.kode; else selectKode.value = '';
                 document.getElementById('input-detail').value = options.detail || '';
+
+                // If editing, pre-select the kategori/kategori klinis based on the kode's data attributes
+                if(options.kode){
+                    // Try to find the option for the kode and use its dataset to set filters
+                    const opt = Array.from(selectKode.options).find(o => o.value === String(options.kode));
+                    if(opt){
+                        if(opt.dataset.kategori) filterKat.value = opt.dataset.kategori;
+                        if(opt.dataset.kategoriKlinis) filterKatKlinis.value = opt.dataset.kategoriKlinis;
+                    }
+                }
+
+                // Apply filtering so the kode select shows matching options, then set the selected kode
+                if(typeof filterOptions === 'function') filterOptions();
+                if(options.kode) selectKode.value = options.kode; else selectKode.value = '';
+
                 // show modal
                 modal.style.display = 'flex';
             }
