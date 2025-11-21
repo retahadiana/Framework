@@ -25,12 +25,18 @@ class TemuDokter extends Model
      */
     protected $fillable = [
         'idpet',
-        'idpemilik',
-        'tanggal_reservasi',
-        'jam_mulai',
-        'jam_selesai',
+        'idrole_user',
+        'no_urut',
+        'waktu_daftar',
         'status',
         'keterangan',
+    ];
+
+    /**
+     * Cast date/time columns to Carbon instances so views can call ->format()
+     */
+    protected $casts = [
+        'waktu_daftar' => 'datetime',
     ];
 
     /**
@@ -50,8 +56,37 @@ class TemuDokter extends Model
         return $this->belongsTo(Pet::class, 'idpet', 'idpet');
     }
 
-    public function pemilik()
+    /**
+     * Convenience accessor: resolve pemilik via the related pet.
+     * The `temu_dokter` table does not contain `idpemilik`; use pet->pemilik instead.
+     */
+    public function getPemilikAttribute()
     {
-        return $this->belongsTo(Pemilik::class, 'idpemilik', 'idpemilik');
+        return $this->pet ? $this->pet->pemilik : null;
+    }
+
+    /**
+     * Backwards-compatible accessor: some legacy code expects `tanggal_reservasi`.
+     * If that column is missing, return `waktu_daftar` as a fallback.
+     */
+    public function getTanggalReservasiAttribute()
+    {
+        if (array_key_exists('tanggal_reservasi', $this->attributes) && $this->attributes['tanggal_reservasi']) {
+            return $this->asDateTime($this->attributes['tanggal_reservasi']);
+        }
+
+        if (array_key_exists('waktu_daftar', $this->attributes) && $this->attributes['waktu_daftar']) {
+            return $this->asDateTime($this->attributes['waktu_daftar']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Relation to the role_user row that represents the assigned doctor for this reservation.
+     */
+    public function roleUser()
+    {
+        return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
     }
 }

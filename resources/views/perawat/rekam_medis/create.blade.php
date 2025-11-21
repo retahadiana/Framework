@@ -27,7 +27,8 @@
 
 			<form method="POST" action="{{ route('perawat.rekam_medis.store') }}">
 				@csrf
-				<input type="hidden" name="idreservasi_dokter" value="{{ request('id') }}" />
+				{{-- Accept several possible query param names set by different links: idreservasi, id, or idreservasi_dokter --}}
+				<input type="hidden" name="idreservasi_dokter" value="{{ request()->query('idreservasi') ?? request()->query('id') ?? request()->query('idreservasi_dokter') }}" />
 
 				<div class="mb-3">
 					<label for="anamnesa" class="form-label fw-semibold">Anamnesa</label>

@@ -13,7 +13,7 @@
                 <div class="container-fluid">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard Dokter</li>
+                        <li class="breadcrumb-item active">Dashboard Perawat</li>
                     </ol>
                 </div>
             </div>

@@ -26,7 +26,7 @@
             </li>
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                    <span class="d-none d-md-inline">{{ Auth::user()->name ?? 'Dokter' }}</span>
+                    <span class="d-none d-md-inline">{{ Auth::user()->name ?? 'Perawat' }}</span>
                 </a>
                 {{-- User menu dropdown bisa diisi info dokter --}}
             </li>

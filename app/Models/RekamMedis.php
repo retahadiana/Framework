@@ -17,7 +17,9 @@ class RekamMedis extends Model
     protected $primaryKey = 'idrekam_medis';
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['created_at', 'idpet', 'idpemilik', 'anamnesa', 'temuan_klinis', 'diagnosa', 'idreservasi_dokter', 'dokter_pemeriksa'];
+    // Keep fillable in sync with actual database columns for `rekam_medis`.
+    // The table doesn't include `idpet`/`idpemilik` in this schema, so omit them.
+    protected $fillable = ['created_at', 'anamnesa', 'temuan_klinis', 'diagnosa', 'idreservasi_dokter', 'dokter_pemeriksa'];
     // public $timestamps = false;
 
     // This table does not have `updated_at` column; disable Eloquent timestamps

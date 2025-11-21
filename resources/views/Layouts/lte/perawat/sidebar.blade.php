@@ -34,6 +34,22 @@
           </a>
         </li>
         @endif
+        @if(Route::has('perawat.profil.index'))
+        <li class="nav-item">
+          <a href="{{ route('perawat.profil.index') }}" class="nav-link">
+            <i class="nav-icon bi bi-person"></i>
+            <p>Profil Saya</p>
+          </a>
+        </li>
+        @endif
+        @if(Route::has('perawat.profil.create'))
+        <li class="nav-item">
+          <a href="{{ route('perawat.profil.create') }}" class="nav-link">
+            <i class="nav-icon bi bi-person-plus"></i>
+            <p>Buat Profil</p>
+          </a>
+        </li>
+        @endif
       </ul>
     </nav>
   </div>

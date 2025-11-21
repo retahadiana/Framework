@@ -13,7 +13,7 @@ class Pemilik extends Model
     public $incrementing = true;
     protected $keyType = 'int';
     protected $fillable = [
-        'nama_pemilik',
+        //'nama_pemilik', // removed: name stored on related `user` table
         'no_wa',
         'alamat',
         'iduser',
@@ -25,6 +25,20 @@ class Pemilik extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'iduser', 'iduser');
+    }
+
+    /**
+     * Accessor to provide `nama_pemilik` even if the actual name is stored
+     * on the related `user` table (legacy schema compatibility).
+     */
+    public function getNamaPemilikAttribute()
+    {
+        // If the column exists and has a value, use it; otherwise fall back to related user.nama
+        if (array_key_exists('nama_pemilik', $this->attributes) && $this->attributes['nama_pemilik']) {
+            return $this->attributes['nama_pemilik'];
+        }
+
+        return optional($this->user)->nama;
     }
 
     public function pets()

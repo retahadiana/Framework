@@ -40,11 +40,15 @@
             <p>Resep Obat</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="{{ url('/dokter/pasien') }}" class="nav-link">
-            <i class="nav-icon bi bi-people"></i>
-            <p>Data Pasien</p>
-          </a>
+        <li class="nav-item"> 
+            @if(!empty($currentDokterId))
+              <a href="{{ route('dokter.profil.show', $currentDokterId) }}" class="nav-link">
+            @else
+              <a href="{{ route('dokter.profil.create') }}" class="nav-link">
+            @endif
+              <i class="nav-icon bi bi-person-circle"></i>
+              <p>Profil Dokter</p>
+            </a>
         </li>
       </ul>
     </nav>

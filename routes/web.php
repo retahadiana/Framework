@@ -113,6 +113,28 @@ Route::middleware(['auth', 'isDokter'])->group(function () {
     Route::get('/dokter/dashboard', [DokterDashboardController::class, 'index'])
         ->name('dokter.dashboard');
 
+    // Dokter profile view (show by id)
+    // Dokter profile (current dokter) - redirect to specific ID
+    Route::get('/dokter/profil', [App\Http\Controllers\dokter\DokterProfilController::class, 'index'])
+    ->name('dokter.profil.index');
+
+    // Create profile form + store
+    Route::get('/dokter/profil/create', [App\Http\Controllers\dokter\DokterProfilController::class, 'create'])
+        ->name('dokter.profil.create');
+    Route::post('/dokter/profil', [App\Http\Controllers\dokter\DokterProfilController::class, 'store'])
+        ->name('dokter.profil.store');
+
+    // Dokter profile view (show by id)
+    Route::get('/dokter/profil/{id}', [App\Http\Controllers\dokter\DokterProfilController::class, 'show'])
+        ->name('dokter.profil.show');
+
+    // Edit & update dokter profile
+    Route::get('/dokter/profil/{id}/edit', [App\Http\Controllers\dokter\DokterProfilController::class, 'edit'])
+        ->name('dokter.profil.edit');
+
+    Route::put('/dokter/profil/{id}', [App\Http\Controllers\dokter\DokterProfilController::class, 'update'])
+        ->name('dokter.profil.update');
+
     Route::get('/dokter/rekam-medis', 
         [App\Http\Controllers\dokter\RekamMedisController::class, 'index'])
     ->name('dokter.rekam_medis.index');
@@ -120,6 +142,10 @@ Route::middleware(['auth', 'isDokter'])->group(function () {
     Route::get('/dokter/rekam-medis/{rekam}', 
         [App\Http\Controllers\dokter\RekamMedisController::class, 'show'])
     ->name('dokter.rekam_medis.show');
+    // Detail tindakan & terapi CRUD (dokter)
+    Route::post('/dokter/rekam-medis/{idrekam}/detail', [App\Http\Controllers\dokter\RekamMedisController::class, 'storeDetail'])->name('dokter.rekam_medis.detail.store');
+    Route::put('/dokter/rekam-medis/detail/{iddetail}', [App\Http\Controllers\dokter\RekamMedisController::class, 'updateDetail'])->name('dokter.rekam_medis.detail.update');
+    Route::delete('/dokter/rekam-medis/detail/{iddetail}', [App\Http\Controllers\dokter\RekamMedisController::class, 'destroyDetail'])->name('dokter.rekam_medis.detail.destroy');
 });
 
 
@@ -162,18 +188,58 @@ Route::middleware(['auth', 'isPerawat'])->group(function () {
         Route::post('/perawat/rekam-medis',
             [App\Http\Controllers\perawat\RekamMedisController::class, 'store'])
         ->name('perawat.rekam_medis.store');
+
+        // Perawat profile routes (show current perawat or create profile)
+        Route::get('/perawat/profil', [App\Http\Controllers\perawat\PerawatProfilController::class, 'index'])
+            ->name('perawat.profil.index');
+
+        Route::get('/perawat/profil/create', [App\Http\Controllers\perawat\PerawatProfilController::class, 'create'])
+            ->name('perawat.profil.create');
+
+        Route::post('/perawat/profil', [App\Http\Controllers\perawat\PerawatProfilController::class, 'store'])
+            ->name('perawat.profil.store');
+
+        Route::get('/perawat/profil/{id}', [App\Http\Controllers\perawat\PerawatProfilController::class, 'show'])
+            ->name('perawat.profil.show');
+        
+        // Edit and update perawat profile
+        Route::get('/perawat/profil/{id}/edit', [App\Http\Controllers\perawat\PerawatProfilController::class, 'edit'])
+            ->name('perawat.profil.edit');
+
+        Route::put('/perawat/profil/{id}', [App\Http\Controllers\perawat\PerawatProfilController::class, 'update'])
+            ->name('perawat.profil.update');
 });
 
 Route::middleware(['auth', 'isResepsionis'])->group(function () {
     Route::get('/resepsionis/dashboard', [ResepsionisDashboardController::class, 'index'])->name('resepsionis.dashboard');
 
     Route::get('/resepsionis/pemilik', [App\Http\Controllers\resepsionis\PemilikController::class, 'index'])->name('resepsionis.pemilik.index');
+    // Registrasi pemilik (resepsionis)
+    Route::get('/resepsionis/pemilik/create', [App\Http\Controllers\resepsionis\PemilikController::class, 'create'])->name('resepsionis.pemilik.create');
+    Route::post('/resepsionis/pemilik', [App\Http\Controllers\resepsionis\PemilikController::class, 'store'])->name('resepsionis.pemilik.store');
     Route::get('/resepsionis/pet', [App\Http\Controllers\resepsionis\PetController::class, 'index'])->name('resepsionis.pet.index');
+    // Registrasi pet (resepsionis)
+    Route::get('/resepsionis/pet/create', [App\Http\Controllers\resepsionis\PetController::class, 'create'])->name('resepsionis.pet.create');
+    Route::post('/resepsionis/pet', [App\Http\Controllers\resepsionis\PetController::class, 'store'])->name('resepsionis.pet.store');
+    // Temu dokter routes (resepsionis)
     Route::get('/resepsionis/temu-dokter', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'index'])->name('resepsionis.temu_dokter.index');
+    Route::post('/resepsionis/temu-dokter', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'store'])->name('resepsionis.temu_dokter.store');
+    Route::patch('/resepsionis/temu-dokter/{id}/diperiksa', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'markAsDiperiksa'])->name('resepsionis.temu_dokter.check');
+    Route::delete('/resepsionis/temu-dokter/{id}', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'destroy'])->name('resepsionis.temu_dokter.destroy');
 });
 
 Route::middleware(['auth', 'isPemilik'])->group(function () {
     Route::get('/dashboard/pemilik', [PemilikDashboardController::class, 'index'])->name('pemilik.dashboard');
+    // Daftar Rekam Medis for pemilik
+    Route::get('/pemilik/rekam-medis', [App\Http\Controllers\Pemilik\DaftarRekamMedisController::class, 'index'])->name('pemilik.rekam_medis.index');
+    Route::get('/pemilik/rekam-medis/{id}', [App\Http\Controllers\Pemilik\DaftarRekamMedisController::class, 'show'])->name('pemilik.rekam_medis.show');
+    // Daftar Reservasi (pemilik)
+    Route::get('/pemilik/reservasi', [App\Http\Controllers\Pemilik\DaftarReservasiController::class, 'index'])->name('pemilik.reservasi.index');
+    // Data Pet Saya (pemilik)
+    Route::get('/pemilik/pets', [App\Http\Controllers\Pemilik\DataPetSayaController::class, 'index'])->name('pemilik.pets.index');
+    // Profil pemilik
+    Route::get('/pemilik/profil', [App\Http\Controllers\Pemilik\ProfileController::class, 'index'])->name('pemilik.profil.index');
+    Route::put('/pemilik/profil', [App\Http\Controllers\Pemilik\ProfileController::class, 'update'])->name('pemilik.profil.update');
 });
 
 

@@ -41,14 +41,18 @@
                             <td>{{ \Illuminate\Support\Str::limit($rekamMedis->anamnesa ?? '-', 100) }}</td>
                             <td>{{ \Illuminate\Support\Str::limit($rekamMedis->temuan_klinis ?? '-', 100) }}</td>
                             <td>
-                                <a href="{{ route('perawat.rekam_medis.show', $rekamMedis->idrekam_medis) }}" class="btn btn-sm btn-info" style="border-radius:6px;font-weight:600;color:#fff;margin-right:4px;">Detail</a>
-                                <a href="{{ route('perawat.rekam_medis.edit', $rekamMedis->idrekam_medis) }}" class="btn btn-sm btn-warning" style="border-radius:6px;font-weight:600;color:#fff;margin-right:4px;">Edit</a>
-                                <form method="POST" action="{{ route('perawat.rekam_medis.destroy', $rekamMedis->idrekam_medis) }}" class="d-inline" onsubmit="return confirm('Hapus rekam medis ini? Tindakan ini tidak dapat dibatalkan.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" style="border-radius:6px;font-weight:600;color:#fff;">Hapus</button>
-                                </form>
-                                <a href="{{ route('perawat.rekam_medis.create') }}" class="btn btn-sm btn-success" style="border-radius:6px;font-weight:600;color:#fff;margin-left:6px;">Tambah</a>
+                                @if(!empty($rekamMedis->idrekam_medis))
+                                    <a href="{{ route('perawat.rekam_medis.show', $rekamMedis->idrekam_medis) }}" class="btn btn-sm btn-info" style="border-radius:6px;font-weight:600;color:#fff;margin-right:4px;">Detail</a>
+                                    <a href="{{ route('perawat.rekam_medis.edit', $rekamMedis->idrekam_medis) }}" class="btn btn-sm btn-warning" style="border-radius:6px;font-weight:600;color:#fff;margin-right:4px;">Edit</a>
+                                    <form method="POST" action="{{ route('perawat.rekam_medis.destroy', $rekamMedis->idrekam_medis) }}" class="d-inline" onsubmit="return confirm('Hapus rekam medis ini? Tindakan ini tidak dapat dibatalkan.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" style="border-radius:6px;font-weight:600;color:#fff;">Hapus</button>
+                                    </form>
+                                @else
+                                    {{-- If no RekamMedis exists yet for this reservation, show a direct create link and pass the reservation id so the form can prefill. --}}
+                                    <a href="{{ route('perawat.rekam_medis.create') }}?idreservasi={{ $rekamMedis->idreservasi_dokter }}" class="btn btn-sm btn-success" style="border-radius:6px;font-weight:600;color:#fff;margin-left:6px;">Tambah</a>
+                                @endif
                             </td>
                         </tr>
                         @empty

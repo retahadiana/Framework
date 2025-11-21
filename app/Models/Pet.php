@@ -15,6 +15,14 @@ class Pet extends Model
     protected $fillable = ['nama', 'tanggal_lahir', 'warna_tanda', 'jenis_kelamin', 'idpemilik', 'idras_hewan'];
     public $timestamps = false;
 
+    /**
+     * Cast attributes to appropriate types.
+     * Ensure `tanggal_lahir` is a Carbon date instance so views can call ->format().
+     */
+    protected $casts = [
+        'tanggal_lahir' => 'date',
+    ];
+
     public function pemilik()
     {
         return $this->belongsTo(Pemilik::class, 'idpemilik', 'idpemilik');
