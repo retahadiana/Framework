@@ -95,6 +95,18 @@
                 <p>Role</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('dokter.index') }}" class="nav-link">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Dokter</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('perawat.index') }}" class="nav-link">
+                <i class="nav-icon bi bi-circle"></i>
+                <p>Perawat</p>
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item has-treeview">

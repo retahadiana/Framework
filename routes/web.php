@@ -107,6 +107,18 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
     Route::get('/{iduser}/resetPassword', [UserController::class, 'showResetPassword'])->name('showResetPassword');
     Route::post('/{iduser}/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
     });
+    // Admin routes for managing doctors
+    Route::prefix('dokter')->name('dokter.')->group(function () {
+    Route::get('/', [App\Http\Controllers\DokterController::class, 'index'])->name('index');
+    Route::get('/{id}/edit', [App\Http\Controllers\DokterController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [App\Http\Controllers\DokterController::class, 'update'])->name('update');
+    });
+    // Admin routes for managing nurses
+    Route::prefix('perawat')->name('perawat.')->group(function () {
+        Route::get('/', [App\Http\Controllers\PerawatController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [App\Http\Controllers\PerawatController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [App\Http\Controllers\PerawatController::class, 'update'])->name('update');
+    });
 });
 
 Route::middleware(['auth', 'isDokter'])->group(function () {
@@ -242,13 +254,11 @@ Route::middleware(['auth', 'isPemilik'])->group(function () {
     Route::put('/pemilik/profil', [App\Http\Controllers\Pemilik\ProfileController::class, 'update'])->name('pemilik.profil.update');
 });
 
-
 Route::get("/layanan", [SiteController::class, 'layanan'])->name('layanan.index');
 Route::get("/visi-misi", [SiteController::class, 'visi_misi']);
 Route::get("/struktur-organisasi", [SiteController::class, 'struktur']);
 Route::get("/kontak", [SiteController::class, 'kontak']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
-// (Removed duplicate admin route block) — admin routes are already declared above in the first admin middleware group.
 
 
