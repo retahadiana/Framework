@@ -142,17 +142,13 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{ route('temu_dokter.index') }}" class="nav-link">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Temu Dokter</p>
               </a>
             </li>
             <li class="nav-item">
-              @if(Route::has('rekam_medis.index'))
-              <a href="{{ route('rekam_medis.index') }}" class="nav-link">
-              @else
-              <a href="{{ url('admin/datarekammedis') }}" class="nav-link">
-              @endif
+              <a href="{{ route('datarekammedis.index') }}" class="nav-link">
                 <i class="nav-icon bi bi-circle"></i>
                 <p>Rekam Medis</p>
               </a>

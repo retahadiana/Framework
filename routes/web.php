@@ -110,14 +110,42 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
     // Admin routes for managing doctors
     Route::prefix('dokter')->name('dokter.')->group(function () {
     Route::get('/', [App\Http\Controllers\DokterController::class, 'index'])->name('index');
+    Route::get('/create', [App\Http\Controllers\DokterController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\DokterController::class, 'store'])->name('store');
     Route::get('/{id}/edit', [App\Http\Controllers\DokterController::class, 'edit'])->name('edit');
     Route::put('/{id}', [App\Http\Controllers\DokterController::class, 'update'])->name('update');
     });
     // Admin routes for managing nurses
     Route::prefix('perawat')->name('perawat.')->group(function () {
         Route::get('/', [App\Http\Controllers\PerawatController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\PerawatController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\PerawatController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [App\Http\Controllers\PerawatController::class, 'edit'])->name('edit');
         Route::put('/{id}', [App\Http\Controllers\PerawatController::class, 'update'])->name('update');
+    });
+
+    // Admin routes for Temu Dokter (appointments)
+    Route::prefix('temu-dokter')->name('temu_dokter.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\TemuDokterController::class, 'index'])->name('index');
+        Route::post('/store', [App\Http\Controllers\Admin\TemuDokterController::class, 'store'])->name('store');
+        Route::patch('/{id}/diperiksa', [App\Http\Controllers\Admin\TemuDokterController::class, 'markAsDiperiksa'])->name('check');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\TemuDokterController::class, 'destroy'])->name('destroy');
+    });
+
+    // Admin routes for Rekam Medis (CRUD + detail)
+    Route::prefix('datarekammedis')->name('datarekammedis.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\RekamMedis::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\RekamMedis::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\Admin\RekamMedis::class, 'store'])->name('store');
+        Route::get('/{id}', [App\Http\Controllers\Admin\RekamMedis::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [App\Http\Controllers\Admin\RekamMedis::class, 'edit'])->name('edit');
+        Route::put('/{id}', [App\Http\Controllers\Admin\RekamMedis::class, 'update'])->name('update');
+        Route::delete('/{id}/destroy', [App\Http\Controllers\Admin\RekamMedis::class, 'destroy'])->name('destroy');
+
+        // Detail routes
+        Route::get('/{id}/detail/create', [App\Http\Controllers\Admin\RekamMedis::class, 'createDetail'])->name('detail.create');
+        Route::post('/{id}/detail/store', [App\Http\Controllers\Admin\RekamMedis::class, 'storeDetail'])->name('detail.store');
+        Route::delete('/{id}/detail/{detailId}/destroy', [App\Http\Controllers\Admin\RekamMedis::class, 'destroyDetail'])->name('detail.destroy');
     });
 });
 

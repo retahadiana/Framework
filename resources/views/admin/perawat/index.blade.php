@@ -1,7 +1,12 @@
 @extends('layouts.lte.main')
 @section('content')
 <div class="container">
-    <h1>Data Perawat</h1>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h1>Data Perawat</h1>
+        <div>
+            <a href="{{ route('perawat.create') }}" class="btn btn-success">Tambah Perawat</a>
+        </div>
+    </div>
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif

@@ -64,7 +64,34 @@ class DokterProfilController extends Controller
             return redirect()->route('login');
         }
 
-        // If profile already exists, redirect to profile
+        $user = Auth::user();
+
+        // If admin, show a list of users who have role 'Dokter' but don't have a dokter profile yet
+        $isAdmin = false;
+        if (method_exists($user, 'roleUser')) {
+            $roleUser = $user->roleUser()->where('status', 1)->with('role')->first();
+            if ($roleUser && isset($roleUser->role->nama_role) && strtolower($roleUser->role->nama_role) === 'administrator') {
+                $isAdmin = true;
+            }
+        }
+
+        if ($isAdmin) {
+            // users who have role 'Dokter'
+            $dokterUsers = \App\Models\User::whereHas('roleUser', function($q){
+                $q->where('status', 1)->whereHas('role', function($r){
+                    $r->where('nama_role', 'Dokter');
+                });
+            })->get();
+
+            $taken = Dokter::pluck('id_user')->filter()->all();
+            $users = $dokterUsers->filter(function($u) use ($taken) {
+                return !in_array($u->iduser ?? $u->id, $taken);
+            });
+
+            return view('dokter.profil.create', compact('users'));
+        }
+
+        // Non-admin: If profile already exists, redirect to profile
         $existing = Dokter::where('id_user', Auth::id())->first();
         if ($existing) {
             return redirect()->route('dokter.profil.index');
@@ -81,21 +108,44 @@ class DokterProfilController extends Controller
         if (! Auth::check()) {
             return redirect()->route('login');
         }
+        $user = Auth::user();
 
-        $data = $request->validate([
+        // detect admin
+        $isAdmin = false;
+        if (method_exists($user, 'roleUser')) {
+            $roleUser = $user->roleUser()->where('status', 1)->with('role')->first();
+            if ($roleUser && isset($roleUser->role->nama_role) && strtolower($roleUser->role->nama_role) === 'administrator') {
+                $isAdmin = true;
+            }
+        }
+
+        $rules = [
             'alamat' => 'nullable|string|max:255',
             'no_hp' => 'nullable|string|max:45',
             'bidang_dokter' => 'nullable|string|max:100',
             'jenis_kelamin' => 'nullable|string|in:L,P',
-        ]);
+        ];
 
-        $data['id_user'] = Auth::id();
+        if ($isAdmin) {
+            $rules['id_user'] = 'required|integer';
+        }
 
-        // create dokter record
+        $data = $request->validate($rules);
+
+        if ($isAdmin) {
+            $idUser = $data['id_user'];
+            // ensure user doesn't already have a profile
+            if (Dokter::where('id_user', $idUser)->exists()) {
+                return back()->with('error', 'User sudah memiliki profil dokter.');
+            }
+            $data['id_user'] = $idUser;
+        } else {
+            $data['id_user'] = Auth::id();
+        }
+
         $dokter = Dokter::create($data);
 
-        return redirect()->route('dokter.profil.show', $dokter->id_dokter)
-            ->with('success', 'Profil dokter berhasil dibuat.');
+        return redirect()->route('dokter.index')->with('success', 'Profil dokter berhasil dibuat.');
     }
 
     /**
