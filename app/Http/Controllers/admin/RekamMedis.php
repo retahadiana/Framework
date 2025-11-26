@@ -57,7 +57,6 @@ class RekamMedis extends Controller
 
         $id = DB::table('rekam_medis')->insertGetId(array_merge($data, [
             'created_at' => now(),
-            'updated_at' => now(),
         ]));
 
         return redirect()->route('datarekammedis.show', $id)->with('success', 'Rekam medis berhasil dibuat.');
@@ -99,6 +98,37 @@ class RekamMedis extends Controller
         return view('admin.datarekammedis.edit', compact('rekam'));
     }
 
+    /**
+     * Show delete confirmation page for a Rekam Medis.
+     */
+    public function delete($id)
+    {
+        try {
+            $rekam = DB::table('rekam_medis as r')
+                ->leftJoin('temu_dokter as res', 'r.idreservasi_dokter', '=', 'res.idreservasi_dokter')
+                ->leftJoin('pet', 'res.idpet', '=', 'pet.idpet')
+                ->leftJoin('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
+                ->leftJoin('user as upemilik', 'pemilik.iduser', '=', 'upemilik.iduser')
+                ->leftJoin('role_user as ru', 'r.dokter_pemeriksa', '=', 'ru.idrole_user')
+                ->leftJoin('user as udokter', 'ru.iduser', '=', 'udokter.iduser')
+                ->select(
+                    'r.*',
+                    'pet.nama as pet_nama',
+                    'upemilik.nama as pemilik_nama',
+                    'udokter.nama as dokter_nama'
+                )
+                ->where('r.idrekam_medis', $id)
+                ->first();
+
+            if (! $rekam) abort(404);
+        } catch (\Exception $e) {
+            $rekam = DB::table('rekam_medis')->where('idrekam_medis', $id)->first();
+            if (! $rekam) abort(404);
+        }
+
+        return view('admin.datarekammedis.delete', compact('rekam'));
+    }
+
     public function update(Request $request, $id)
     {
         $data = $request->validate([
@@ -109,7 +139,7 @@ class RekamMedis extends Controller
             'idreservasi_dokter' => 'nullable|integer',
         ]);
 
-        DB::table('rekam_medis')->where('idrekam_medis', $id)->update(array_merge($data, ['updated_at' => now()]));
+        DB::table('rekam_medis')->where('idrekam_medis', $id)->update($data);
 
         return redirect()->route('datarekammedis.show', $id)->with('success', 'Rekam medis berhasil diupdate.');
     }
