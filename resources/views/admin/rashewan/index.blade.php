@@ -1,169 +1,61 @@
 @extends('Layouts.lte.main')
 
 @section('content')
-<style>
-    .ras-card {
-        max-width: 1000px;
-        margin: 40px auto;
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        padding: 0;
-        overflow: hidden;
-    }
-    .ras-header {
-        background: #16b1e6;
-        color: #fff;
-        padding: 24px 32px 16px 32px;
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .ras-header i {
-        font-size: 2.5rem;
-        background: #fff;
-        color: #16b1e6;
-        border-radius: 50%;
-        padding: 10px;
-        margin-right: 10px;
-    }
-    .ras-header h2 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        margin: 0;
-    }
-    .ras-header p {
-        font-size: 1.1rem;
-        margin: 0;
-        color: #e0f7fa;
-    }
-    .ras-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0;
-    }
-    .ras-table th {
-        background: #b2ebf2;
-        color: #222;
-        font-weight: 700;
-        padding: 16px 0;
-        text-align: left;
-    }
-    .ras-table th, .ras-table td {
-        padding-left: 32px;
-        padding-right: 32px;
-    }
-    .ras-table td {
-        padding: 14px 0;
-        border-bottom: 1px solid #e0e0e0;
-        font-size: 1.08rem;
-        vertical-align: top;
-    }
-    .aksi-btn {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 4px;
-    }
-    .btn-update {
-        background: #1677ff;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 14px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-    .btn-update:hover {
-        background: #0056b3;
-    }
-    .btn-delete {
-        background: #e74c3c;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 14px;
-        font-weight: 600;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-    .btn-delete:hover {
-        background: #c0392b;
-    }
-    .btn-tambah-ras {
-        background: #27ae60;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0 0 0 0;
-        box-shadow: 0 1px 4px rgba(39,174,96,0.08);
-        transition: background 0.2s;
-        text-decoration: none;
-        display: inline-block;
-    }
-    .btn-tambah-ras:hover {
-        background: #219150;
-    }
-</style>
 
-<div style="background: #e0f7fa; min-height: 100vh; padding-top: 32px;">
-    <div class="ras-card">
-        <div class="ras-header">
-            <i class="fas fa-dog"></i>
-            <div>
-                <h2>Data Ras Hewan</h2>
-                <p>Daftar seluruh ras hewan beserta jenisnya</p>
-            </div>
+<div class="container-fluid py-3">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="mb-0">Data Ras Hewan</h3>
+            <small class="text-muted">Daftar seluruh ras hewan beserta jenisnya</small>
         </div>
-        <table class="ras-table">
-            <thead>
-                <tr>
-                    <th>ID Jenis</th>
-                    <th>Nama Jenis Hewan</th>
-                    <th>Daftar Ras</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $jenisList = $data->groupBy('idjenis_hewan');
-                @endphp
-                @foreach ($jenisList as $idjenis => $rasList)
-                    @php $first = $rasList->first(); @endphp
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="thead-light">
                     <tr>
-                        <td>{{ $first->idjenis_hewan ?? '-' }}</td>
-                        <td>{{ $first->nama_jenis_hewan ?? '-' }}</td>
-                        <td>
-                            <ul style="margin:0;padding-left:18px;">
-                                @foreach ($rasList as $ras)
-                                    <li style="margin-bottom:4px;">
-                                        {{ $ras->nama_ras }}
-                                        <span class="aksi-btn">
-                                            <a href="{{ route('ras-hewan.edit', $ras->idras_hewan) }}" class="btn-update">Edit</a>
-                                            <form action="{{ route('ras-hewan.destroy', $ras->idras_hewan) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-delete" onclick="return confirm('Yakin ingin menghapus ras ini?')">Hapus</button>
-                                            </form>
-                                        </span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </td>
-                        <td>
-                            <a href="{{ route('ras-hewan.create') }}" class="btn-tambah-ras">&#43; Tambah Ras</a>
-                        </td>
+                        <th style="width:120px;">ID Jenis</th>
+                        <th>Nama Jenis Hewan</th>
+                        <th>Daftar Ras</th>
+                        <th style="width:140px;">Aksi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @php
+                        $jenisList = $data->groupBy('idjenis_hewan');
+                    @endphp
+                    @foreach ($jenisList as $idjenis => $rasList)
+                        @php $first = $rasList->first(); @endphp
+                        <tr>
+                            <td>{{ $first->idjenis_hewan ?? '-' }}</td>
+                            <td>{{ $first->nama_jenis_hewan ?? '-' }}</td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    @foreach ($rasList as $ras)
+                                        <li class="mb-2 d-flex align-items-center justify-content-between">
+                                            <span>{{ $ras->nama_ras }}</span>
+                                            <span>
+                                                <a href="{{ route('ras-hewan.edit', $ras->idras_hewan) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                <form action="{{ route('ras-hewan.destroy', $ras->idras_hewan) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus ras ini?')">Hapus</button>
+                                                </form>
+                                            </span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td>
+                                <a href="{{ route('ras-hewan.create') }}" class="btn btn-success btn-sm">+ Tambah Ras</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
 @endsection

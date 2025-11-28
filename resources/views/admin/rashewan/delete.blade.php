@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.lte.main')
 @section('content')
 <div class="container" style="max-width:400px;margin:60px auto;background:#fff;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:32px 28px 24px 28px;">
     <h2 style="font-size:1.6rem;font-weight:700;margin-bottom:24px;">Hapus Ras Hewan</h2>
