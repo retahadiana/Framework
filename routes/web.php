@@ -254,14 +254,20 @@ Route::middleware(['auth', 'isPerawat'])->group(function () {
 Route::middleware(['auth', 'isResepsionis'])->group(function () {
     Route::get('/resepsionis/dashboard', [ResepsionisDashboardController::class, 'index'])->name('resepsionis.dashboard');
 
+    // Pemilik CRUD (resepsionis)
     Route::get('/resepsionis/pemilik', [App\Http\Controllers\resepsionis\PemilikController::class, 'index'])->name('resepsionis.pemilik.index');
-    // Registrasi pemilik (resepsionis)
     Route::get('/resepsionis/pemilik/create', [App\Http\Controllers\resepsionis\PemilikController::class, 'create'])->name('resepsionis.pemilik.create');
     Route::post('/resepsionis/pemilik', [App\Http\Controllers\resepsionis\PemilikController::class, 'store'])->name('resepsionis.pemilik.store');
+    Route::get('/resepsionis/pemilik/{id}/edit', [App\Http\Controllers\resepsionis\PemilikController::class, 'edit'])->name('resepsionis.pemilik.edit');
+    Route::put('/resepsionis/pemilik/{id}', [App\Http\Controllers\resepsionis\PemilikController::class, 'update'])->name('resepsionis.pemilik.update');
+    Route::delete('/resepsionis/pemilik/{id}', [App\Http\Controllers\resepsionis\PemilikController::class, 'destroy'])->name('resepsionis.pemilik.destroy');
+    // Pet CRUD (resepsionis)
     Route::get('/resepsionis/pet', [App\Http\Controllers\resepsionis\PetController::class, 'index'])->name('resepsionis.pet.index');
-    // Registrasi pet (resepsionis)
     Route::get('/resepsionis/pet/create', [App\Http\Controllers\resepsionis\PetController::class, 'create'])->name('resepsionis.pet.create');
     Route::post('/resepsionis/pet', [App\Http\Controllers\resepsionis\PetController::class, 'store'])->name('resepsionis.pet.store');
+    Route::get('/resepsionis/pet/{id}/edit', [App\Http\Controllers\resepsionis\PetController::class, 'edit'])->name('resepsionis.pet.edit');
+    Route::put('/resepsionis/pet/{id}', [App\Http\Controllers\resepsionis\PetController::class, 'update'])->name('resepsionis.pet.update');
+    Route::delete('/resepsionis/pet/{id}', [App\Http\Controllers\resepsionis\PetController::class, 'destroy'])->name('resepsionis.pet.destroy');
     // Temu dokter routes (resepsionis)
     Route::get('/resepsionis/temu-dokter', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'index'])->name('resepsionis.temu_dokter.index');
     Route::post('/resepsionis/temu-dokter', [App\Http\Controllers\resepsionis\TemuDokterController::class, 'store'])->name('resepsionis.temu_dokter.store');

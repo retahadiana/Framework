@@ -1,4 +1,4 @@
-@extends('Layouts.lte.Perawat.main')
+@extends('Layouts.lte.main')
 
 @section('content')
 <div class="container">

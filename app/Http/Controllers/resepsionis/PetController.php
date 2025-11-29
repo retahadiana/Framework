@@ -64,4 +64,50 @@ class PetController extends Controller
             return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data pet: ' . $e->getMessage()]);
         }
     }
+    /**
+     * Show the form for editing the specified pet.
+     */
+    public function edit($id)
+    {
+        $pet = Pet::findOrFail($id);
+        $pemilikList = Pemilik::with('user')->get()->sortBy(function ($p) {
+            return optional($p->user)->nama ?: ($p->attributes['nama_pemilik'] ?? '');
+        });
+        $rasList = RasHewan::with('jenisHewan')->orderBy('idjenis_hewan')->get();
+        return view('resepsionis.pet.edit', compact('pet', 'pemilikList', 'rasList'));
+    }
+
+    /**
+     * Update the specified pet in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $pet = Pet::findOrFail($id);
+        $validated = $request->validate([
+            'nama_pet' => ['required', 'string', 'max:255'],
+            'tgl_lahir' => ['required', 'date'],
+            'warna_tanda' => ['nullable', 'string'],
+            'jenis_kelamin' => ['required', 'in:J,B'],
+            'idpemilik' => ['required', 'integer', 'exists:pemilik,idpemilik'],
+            'idras_hewan' => ['required', 'integer', 'exists:ras_hewan,idras_hewan'],
+        ]);
+        $pet->nama = $validated['nama_pet'];
+        $pet->tanggal_lahir = $validated['tgl_lahir'];
+        $pet->warna_tanda = $validated['warna_tanda'] ?? null;
+        $pet->jenis_kelamin = $validated['jenis_kelamin'];
+        $pet->idpemilik = $validated['idpemilik'];
+        $pet->idras_hewan = $validated['idras_hewan'];
+        $pet->save();
+        return redirect()->route('resepsionis.pet.index')->with('success', 'Data pet berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified pet from storage.
+     */
+    public function destroy($id)
+    {
+        $pet = Pet::findOrFail($id);
+        $pet->delete();
+        return redirect()->route('resepsionis.pet.index')->with('success', 'Data pet berhasil dihapus.');
+    }
 }

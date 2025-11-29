@@ -1,4 +1,4 @@
-@extends('Layouts.lte.resepsionis.main')
+@extends('Layouts.lte.main')
 
 @section('title', 'Registrasi Pemilik')
 @section('page-title', 'Registrasi Pemilik')

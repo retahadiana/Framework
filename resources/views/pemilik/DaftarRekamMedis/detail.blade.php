@@ -1,4 +1,4 @@
-@extends('layouts.lte.pemilik.main')
+@extends('Layouts.lte.main')
 
 @section('content')
     <div class="container mt-4">

@@ -72,4 +72,50 @@ class PemilikController extends Controller
             return back()->withInput()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
         }
     }
+    /**
+     * Show the form for editing the specified pemilik.
+     */
+    public function edit($id)
+    {
+        $pemilik = Pemilik::with('user')->findOrFail($id);
+        return view('resepsionis.pemilik.edit', compact('pemilik'));
+    }
+
+    /**
+     * Update the specified pemilik in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $pemilik = Pemilik::with('user')->findOrFail($id);
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'no_wa' => 'nullable|string|max:50',
+            'alamat' => 'nullable|string',
+        ]);
+        // Update user
+        if ($pemilik->user) {
+            $pemilik->user->nama = $request->nama;
+            $pemilik->user->email = $request->email;
+            $pemilik->user->save();
+        }
+        // Update pemilik
+        $pemilik->no_wa = $request->no_wa;
+        $pemilik->alamat = $request->alamat;
+        $pemilik->save();
+
+        return redirect()->route('resepsionis.pemilik.index')->with('success', 'Data pemilik berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified pemilik from storage.
+     */
+    public function destroy($id)
+    {
+        $pemilik = Pemilik::findOrFail($id);
+        // Optionally, also delete the user if you want:
+        // $pemilik->user()->delete();
+        $pemilik->delete();
+        return redirect()->route('resepsionis.pemilik.index')->with('success', 'Data pemilik berhasil dihapus.');
+    }
 }

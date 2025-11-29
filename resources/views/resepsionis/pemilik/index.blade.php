@@ -1,4 +1,4 @@
-@extends('Layouts.lte.resepsionis.main')
+@extends('Layouts.lte.main')
 
 @section('title','Daftar Pemilik')
 @section('page-title','Pemilik')
@@ -22,6 +22,7 @@
                                 <th>Email</th>
                                 <th>No. WhatsApp</th>
                                 <th>Alamat</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,14 @@
                                     <td>{{ optional($item->user)->email ?? '-' }}</td>
                                     <td>{{ $item->no_wa ?? '-' }}</td>
                                     <td>{{ $item->alamat ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ route('resepsionis.pemilik.edit', $item->idpemilik) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('resepsionis.pemilik.destroy', $item->idpemilik) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr><td colspan="5" class="text-center">Belum ada data pemilik.</td></tr>

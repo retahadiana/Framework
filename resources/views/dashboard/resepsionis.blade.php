@@ -1,4 +1,4 @@
-@extends('layouts.lte.resepsionis.main')
+@extends('layouts.lte.main')
 
 @section('content')
 <div class="container mt-4">

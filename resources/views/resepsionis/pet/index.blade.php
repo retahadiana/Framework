@@ -1,4 +1,4 @@
-@extends('Layouts.lte.resepsionis.main')
+@extends('Layouts.lte.main')
 
 @section('title','Daftar Pet')
 @section('page-title','Pet')
@@ -22,6 +22,7 @@
                                 <th>Tanggal Lahir</th>
                                 <th>Ras</th>
                                 <th>Pemilik</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,6 +33,14 @@
                                     <td>{{ optional($item->tanggal_lahir)->format('d/m/Y') ?? '-' }}</td>
                                     <td>{{ optional($item->rasHewan)->nama_ras ?? '-' }}</td>
                                     <td>{{ optional(optional($item->pemilik)->user)->nama ?? (optional($item->pemilik)->nama_pemilik ?? '-') }}</td>
+                                    <td>
+                                        <a href="{{ route('resepsionis.pet.edit', $item->idpet) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('resepsionis.pet.destroy', $item->idpet) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr><td colspan="5" class="text-center">Belum ada data pet.</td></tr>

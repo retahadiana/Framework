@@ -1,4 +1,4 @@
-@extends('Layouts.lte.Dokter.main')
+@extends('Layouts.lte.main')
 
 @section('title', 'Detail Rekam Medis')
 
