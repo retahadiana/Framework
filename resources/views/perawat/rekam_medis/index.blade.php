@@ -33,7 +33,13 @@
                         @forelse($data as $rekamMedis)
                         <tr style="background:rgba(8,145,178,0.03);">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ optional($rekamMedis->created_at)->format('d F Y, H:i') ?? '-' }}</td>  
+                            <td>
+                                @if(!empty($rekamMedis->created_at))
+                                    <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('c') }}">{{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('d F Y, H:i:s') }}</time>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>{{ data_get($rekamMedis, 'pet.nama') ?? 'N/A' }}</td>
                             <td>{{ data_get($rekamMedis, 'pet.pemilik.user.nama') ?? 'N/A' }}</td>
                             <td>{{ data_get($rekamMedis, 'roleUser.user.nama') ?? 'N/A' }}</td>
@@ -70,3 +76,33 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Update <time class="live-time" data-datetime> elements every second
+(function(){
+    function pad(n){return n<10? '0'+n : n}
+    function formatLocal(dt){
+        var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+        var hh = pad(dt.getHours()), mm = pad(dt.getMinutes()), ss = pad(dt.getSeconds());
+        return (d<10? '0'+d: d) + ' ' + dt.toLocaleString(undefined, { month: 'short' }) + ' ' + y + ', ' + hh + ':' + mm + ':' + ss;
+    }
+
+    function updateTimes(){
+        var els = document.querySelectorAll('time.live-time[data-datetime]');
+        els.forEach(function(el){
+            var iso = el.getAttribute('data-datetime');
+            if(!iso) return;
+            var dt = new Date(iso);
+            if(isNaN(dt)) return;
+            el.textContent = formatLocal(dt);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        updateTimes();
+        setInterval(updateTimes, 1000);
+    });
+})();
+</script>
+@endpush

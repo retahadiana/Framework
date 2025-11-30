@@ -29,7 +29,13 @@
                     <tbody>
                         @foreach($records as $r)
                             <tr>
-                                <td style="white-space:nowrap;">{{ optional($r->temuDokter->waktu_daftar)->format('d M Y H:i') ?? '-' }}</td>
+                                <td style="white-space:nowrap;">
+                                    @if(optional($r->temuDokter)->waktu_daftar)
+                                        <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse(optional($r->temuDokter)->waktu_daftar)->toIso8601String() }}">{{ \Carbon\Carbon::parse(optional($r->temuDokter)->waktu_daftar)->format('d M Y H:i:s') }}</time>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>{{ $r->pet->nama ?? '-' }}</td>
                                 <td>{{ $r->anamnesa ? \Illuminate\Support\Str::limit($r->anamnesa, 50) : '-' }}</td>
                                 <td>{{ $r->temuan_klinis ? \Illuminate\Support\Str::limit($r->temuan_klinis, 50) : '-' }}</td>
@@ -44,4 +50,19 @@
             </div>
         @endif
     </div>
+    <script>
+        (function(){
+            function updateLiveTimes(){
+                document.querySelectorAll('.live-time').forEach(function(el){
+                    const dt = el.getAttribute('data-datetime');
+                    if(!dt) return;
+                    const d = new Date(dt);
+                    if(isNaN(d)) return;
+                    el.textContent = d.toLocaleString('id-ID', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+                });
+            }
+            updateLiveTimes();
+            setInterval(updateLiveTimes, 1000);
+        })();
+    </script>
 @endsection

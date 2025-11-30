@@ -36,7 +36,13 @@
                                 @foreach($upcomingAppointments as $i => $app)
                                     <tr class="rshp-row-hover">
                                         <td><strong>#{{ $app->no_urut ?? $i + 1 }}</strong></td>
-                                        <td>{{ optional($app->waktu_daftar)->format('d/m/Y H:i') ?? '-' }}</td>
+                                        <td>
+                                            @if($app->waktu_daftar)
+                                                <time class="live-time" data-datetime="{{ $app->waktu_daftar->format('c') }}">{{ $app->waktu_daftar->format('d/m/Y H:i:s') }}</time>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>{{ optional($app->pet)->nama ?? '-' }}</td>
                                         <td>{{ optional(optional($app->pet)->pemilik)->nama_pemilik ?? (optional(optional($app->pet)->pemilik)->user->nama ?? '-') }}</td>
                                         <td>{{ optional(optional($app->idrole_user ? App\Models\RoleUser::find($app->idrole_user) : null)->user)->nama ?? '-' }}</td>
@@ -129,4 +135,34 @@
     .rshp-card-body .btn{ background: var(--rshp-accent); border-color: var(--rshp-accent); color:#222; }
     @media (max-width:767px){ .rshp-card{ flex-direction:row; } .rshp-card .btn{ width:100%; } }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+// Update <time class="live-time" data-datetime> elements every second
+(function(){
+    function pad(n){return n<10? '0'+n : n}
+    function formatLocal(dt){
+        var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+        var hh = pad(dt.getHours()), mm = pad(dt.getMinutes()), ss = pad(dt.getSeconds());
+        return (d<10? '0'+d: d) + '/' + (m<10? '0'+m: m) + '/' + y + ' ' + hh + ':' + mm + ':' + ss;
+    }
+
+    function updateTimes(){
+        var els = document.querySelectorAll('time.live-time[data-datetime]');
+        els.forEach(function(el){
+            var iso = el.getAttribute('data-datetime');
+            if(!iso) return;
+            var dt = new Date(iso);
+            if(isNaN(dt)) return;
+            el.textContent = formatLocal(dt);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){
+        updateTimes();
+        setInterval(updateTimes, 1000);
+    });
+})();
+</script>
 @endpush

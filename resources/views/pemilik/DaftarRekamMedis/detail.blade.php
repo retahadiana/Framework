@@ -17,7 +17,13 @@
                 <div class="card-header mb-2">
                     <h5 class="card-title">Detail Rekam Medis</h5>
                 </div>
-                <div class="mb-2"><strong>Tanggal:</strong> {{ optional($record->temuDokter->waktu_daftar)->format('d M Y H:i') ?? '-' }}</div>
+                <div class="mb-2"><strong>Tanggal:</strong>
+                    @if(optional($record->temuDokter)->waktu_daftar)
+                        <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse(optional($record->temuDokter)->waktu_daftar)->toIso8601String() }}">{{ \Carbon\Carbon::parse(optional($record->temuDokter)->waktu_daftar)->format('d M Y H:i:s') }}</time>
+                    @else
+                        -
+                    @endif
+                </div>
                 <div class="mb-2"><strong>Nama Hewan:</strong> {{ $record->pet->nama ?? '-' }}</div>
                 <div class="mb-2"><strong>Dokter Pemeriksa:</strong> {{ data_get($record, 'roleUser.user.nama') ?? 'N/A' }}</div>
                 <hr />
@@ -30,4 +36,19 @@
             </div>
         @endif
     </div>
+    <script>
+        (function(){
+            function updateLiveTimes(){
+                document.querySelectorAll('.live-time').forEach(function(el){
+                    const dt = el.getAttribute('data-datetime');
+                    if(!dt) return;
+                    const d = new Date(dt);
+                    if(isNaN(d)) return;
+                    el.textContent = d.toLocaleString('id-ID', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+                });
+            }
+            updateLiveTimes();
+            setInterval(updateLiveTimes, 1000);
+        })();
+    </script>
 @endsection

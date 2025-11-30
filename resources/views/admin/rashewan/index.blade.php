@@ -22,30 +22,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $jenisList = $data->groupBy('idjenis_hewan');
-                    @endphp
-                    @foreach ($jenisList as $idjenis => $rasList)
-                        @php $first = $rasList->first(); @endphp
+                    @foreach ($jenis as $j)
+                        @php
+                            $rasList = $ras->where('idjenis_hewan', $j->idjenis_hewan);
+                        @endphp
                         <tr>
-                            <td>{{ $first->idjenis_hewan ?? '-' }}</td>
-                            <td>{{ $first->nama_jenis_hewan ?? '-' }}</td>
+                            <td>{{ $j->idjenis_hewan }}</td>
+                            <td>{{ $j->nama_jenis_hewan }}</td>
                             <td>
-                                <ul class="list-unstyled mb-0">
-                                    @foreach ($rasList as $ras)
-                                        <li class="mb-2 d-flex align-items-center justify-content-between">
-                                            <span>{{ $ras->nama_ras }}</span>
-                                            <span>
-                                                <a href="{{ route('ras-hewan.edit', $ras->idras_hewan) }}" class="btn btn-primary btn-sm">Edit</a>
-                                                <form action="{{ route('ras-hewan.destroy', $ras->idras_hewan) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus ras ini?')">Hapus</button>
-                                                </form>
-                                            </span>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                                @if ($rasList->isEmpty())
+                                    <div class="small text-muted">Belum ada ras untuk jenis ini.</div>
+                                @else
+                                    <ul class="list-unstyled mb-0">
+                                        @foreach ($rasList as $rasItem)
+                                            <li class="mb-2 d-flex align-items-center justify-content-between">
+                                                <span>{{ $rasItem->nama_ras }}</span>
+                                                <span>
+                                                    <a href="{{ route('ras-hewan.edit', $rasItem->idras_hewan) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                    <form action="{{ route('ras-hewan.destroy', $rasItem->idras_hewan) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus ras ini?')">Hapus</button>
+                                                    </form>
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
                             </td>
                             <td>
                                 <a href="{{ route('ras-hewan.create') }}" class="btn btn-success btn-sm">+ Tambah Ras</a>

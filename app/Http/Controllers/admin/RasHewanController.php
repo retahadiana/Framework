@@ -14,15 +14,17 @@ class RasHewanController extends Controller
 
     public function index()
     {
-        $data = \DB::table('ras_hewan')
-            ->leftJoin('jenis_hewan', 'ras_hewan.idjenis_hewan', '=', 'jenis_hewan.idjenis_hewan')
-            ->select(
-                'ras_hewan.*',
-                'jenis_hewan.idjenis_hewan',
-                'jenis_hewan.nama_jenis_hewan'
-            )
+        // Fetch all jenis hewan and ras hewan separately so the view
+        // can display all jenis even when they have no ras yet.
+        $jenis = \DB::table('jenis_hewan')
+            ->select('idjenis_hewan', 'nama_jenis_hewan')
             ->get();
-        return view('admin.rashewan.index', compact('data'));
+
+        $ras = \DB::table('ras_hewan')
+            ->select('idras_hewan', 'nama_ras', 'idjenis_hewan')
+            ->get();
+
+        return view('admin.rashewan.index', compact('jenis', 'ras'));
     }
 
     // Validasi

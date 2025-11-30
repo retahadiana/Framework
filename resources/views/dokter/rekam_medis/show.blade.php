@@ -26,7 +26,13 @@
                     @endphp
                     <dl class="row mb-0">
                         <dt class="col-5 text-muted">Waktu Kunjungan</dt>
-                        <dd class="col-7">{{ $visitTime ? \Carbon\Carbon::parse($visitTime)->format('d F Y, H:i') : '-' }}</dd>
+                        <dd class="col-7">
+                            @if($visitTime)
+                                <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse($visitTime)->toIso8601String() }}">{{ \Carbon\Carbon::parse($visitTime)->format('d F Y, H:i:s') }}</time>
+                            @else
+                                -
+                            @endif
+                        </dd>
                         <dt class="col-5 text-muted">Nama Pasien</dt>
                         <dd class="col-7">{{ optional($rekam->pet)->nama ?? optional($rekam->pet)->nama_pet ?? '-' }}</dd>
                         <dt class="col-5 text-muted">Nama Pemilik</dt>
@@ -222,6 +228,22 @@
             }
             filterKat.addEventListener('change', filterOptions);
             filterKatKlinis.addEventListener('change', filterOptions);
+        })();
+    </script>
+
+    <script>
+        (function(){
+            function updateLiveTimes(){
+                document.querySelectorAll('.live-time').forEach(function(el){
+                    const dt = el.getAttribute('data-datetime');
+                    if(!dt) return;
+                    const d = new Date(dt);
+                    if(isNaN(d)) return;
+                    el.textContent = d.toLocaleString('id-ID', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+                });
+            }
+            updateLiveTimes();
+            setInterval(updateLiveTimes, 1000);
         })();
     </script>
 

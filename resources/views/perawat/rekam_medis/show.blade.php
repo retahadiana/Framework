@@ -14,7 +14,13 @@
         <div class="card-body">
             <dl class="row">
                 <dt class="col-sm-4">Waktu Daftar</dt>
-                <dd class="col-sm-8">{{ optional($rekamMedis->created_at)->format('d F Y, H:i') ?? '-' }}</dd>
+                <dd class="col-sm-8">
+                    @if(!empty($rekamMedis->created_at))
+                        <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('c') }}">{{ \Carbon\Carbon::parse($rekamMedis->created_at)->format('d F Y, H:i:s') }}</time>
+                    @else
+                        -
+                    @endif
+                </dd>
 
                 <dt class="col-sm-4">Nama Pet</dt>
                 <dd class="col-sm-8">{{ data_get($rekamMedis, 'pet.nama') ?? 'N/A' }}</dd>
@@ -41,3 +47,28 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Same live-time updater as other views
+(function(){
+    function pad(n){return n<10? '0'+n : n}
+    function formatLocal(dt){
+        var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+        var hh = pad(dt.getHours()), mm = pad(dt.getMinutes()), ss = pad(dt.getSeconds());
+        return (d<10? '0'+d: d) + ' ' + dt.toLocaleString(undefined, { month: 'short' }) + ' ' + y + ', ' + hh + ':' + mm + ':' + ss;
+    }
+    function updateTimes(){
+        var els = document.querySelectorAll('time.live-time[data-datetime]');
+        els.forEach(function(el){
+            var iso = el.getAttribute('data-datetime');
+            if(!iso) return;
+            var dt = new Date(iso);
+            if(isNaN(dt)) return;
+            el.textContent = formatLocal(dt);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function(){ updateTimes(); setInterval(updateTimes, 1000); });
+})();
+</script>
+@endpush

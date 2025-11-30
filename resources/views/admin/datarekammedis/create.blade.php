@@ -29,12 +29,31 @@
             <input type="text" name="diagnosa" id="diagnosa" class="form-control" value="{{ old('diagnosa') }}">
         </div>
         <div class="mb-3">
-            <label for="dokter_pemeriksa">Dokter Pemeriksa</label>
-            <input type="text" name="dokter_pemeriksa" id="dokter_pemeriksa" class="form-control" value="{{ old('dokter_pemeriksa') }}">
+            <label for="idreservasi_dokter">Reservasi (Pemilik · Pet · Tanggal) <small class="text-muted">(opsional)</small></label>
+            <select name="idreservasi_dokter" id="idreservasi_dokter" class="form-control">
+                <option value="">-- Pilih reservasi (opsional) --</option>
+                @if(isset($reservations))
+                    @foreach($reservations as $res)
+                        <option value="{{ $res->idreservasi_dokter }}" {{ old('idreservasi_dokter') == $res->idreservasi_dokter ? 'selected' : '' }}>
+                            {{ $res->idreservasi_dokter }} · {{ $res->pemilik_nama ?? '-' }} · {{ $res->pet_nama ?? '-' }} · {{ $res->waktu_daftar ? \Carbon\Carbon::parse($res->waktu_daftar)->format('d M Y H:i') : '-' }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
         </div>
+
         <div class="mb-3">
-            <label for="idreservasi_dokter">ID Reservasi Dokter (opsional)</label>
-            <input type="text" name="idreservasi_dokter" id="idreservasi_dokter" class="form-control" value="{{ old('idreservasi_dokter') }}">
+            <label for="dokter_pemeriksa">Dokter Pemeriksa</label>
+            <select name="dokter_pemeriksa" id="dokter_pemeriksa" class="form-control">
+                <option value="">-- Pilih dokter pemeriksa (opsional) --</option>
+                @if(isset($doctors))
+                    @foreach($doctors as $doc)
+                        <option value="{{ $doc->idrole_user }}" {{ old('dokter_pemeriksa') == $doc->idrole_user ? 'selected' : '' }}>
+                            {{ $doc->dokter_nama }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
         </div>
         <button class="btn btn-primary">Simpan</button>
         <a href="{{ route('datarekammedis.index') }}" class="btn btn-secondary">Batal</a>

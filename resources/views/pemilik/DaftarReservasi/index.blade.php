@@ -25,7 +25,13 @@
                         @foreach($reservations as $r)
                             <tr>
                                 <td>#{{ $r->no_urut ?? '-' }}</td>
-                                <td style="white-space:nowrap;">{{ optional($r->waktu_daftar)->format('d M Y H:i') ?? '-' }}</td>
+                                <td style="white-space:nowrap;">
+                                    @if(optional($r)->waktu_daftar)
+                                        <time class="live-time" data-datetime="{{ \Carbon\Carbon::parse(optional($r)->waktu_daftar)->toIso8601String() }}">{{ \Carbon\Carbon::parse(optional($r)->waktu_daftar)->format('d M Y H:i:s') }}</time>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td>{{ $r->pet->nama ?? '-' }}</td>
                                 <td>{{ data_get($r, 'roleUser.user.nama') ?? '-' }}</td>
                                 <td><span class="badge-soft">{{ $r->status ?? '-' }}</span></td>
@@ -36,4 +42,19 @@
             </div>
         @endif
     </div>
+    <script>
+        (function(){
+            function updateLiveTimes(){
+                document.querySelectorAll('.live-time').forEach(function(el){
+                    const dt = el.getAttribute('data-datetime');
+                    if(!dt) return;
+                    const d = new Date(dt);
+                    if(isNaN(d)) return;
+                    el.textContent = d.toLocaleString('id-ID', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+                });
+            }
+            updateLiveTimes();
+            setInterval(updateLiveTimes, 1000);
+        })();
+    </script>
 @endsection

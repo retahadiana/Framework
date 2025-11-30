@@ -269,12 +269,6 @@
             </li>
             @endif
             <li class="nav-item">
-              <a href="{{ url('/dokter/resep-obat') }}" class="nav-link">
-                <i class="nav-icon bi bi-capsule"></i>
-                <p>Resep Obat</p>
-              </a>
-            </li>
-            <li class="nav-item">
                 @if(!empty($currentDokterId))
                   <a href="{{ route('dokter.profil.show', $currentDokterId) }}" class="nav-link">
                 @else
@@ -332,14 +326,6 @@
               <a href="{{ route('perawat.profil.index') }}" class="nav-link">
                 <i class="nav-icon bi bi-person"></i>
                 <p>Profil Saya</p>
-              </a>
-            </li>
-            @endif
-            @if(Route::has('perawat.profil.create'))
-            <li class="nav-item">
-              <a href="{{ route('perawat.profil.create') }}" class="nav-link">
-                <i class="nav-icon bi bi-person-plus"></i>
-                <p>Buat Profil</p>
               </a>
             </li>
             @endif

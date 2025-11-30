@@ -42,7 +42,29 @@ class RekamMedis extends Controller
 
     public function create()
     {
-        return view('admin.datarekammedis.create');
+        // Provide dropdown data: reservations (to get pemilik & pet) and dokter list
+        $reservations = DB::table('temu_dokter as t')
+            ->leftJoin('pet', 't.idpet', '=', 'pet.idpet')
+            ->leftJoin('pemilik', 'pet.idpemilik', '=', 'pemilik.idpemilik')
+            ->leftJoin('user as up', 'pemilik.iduser', '=', 'up.iduser')
+            ->select(
+                't.idreservasi_dokter',
+                // temu_dokter uses `waktu_daftar` for the datetime of the reservation
+                't.waktu_daftar',
+                'pet.nama as pet_nama',
+                'up.nama as pemilik_nama'
+            )
+            ->orderByDesc('t.waktu_daftar')
+            ->get();
+
+        $doctors = DB::table('role_user as ru')
+            ->join('role as r', 'ru.idrole', '=', 'r.idrole')
+            ->join('user as u', 'ru.iduser', '=', 'u.iduser')
+            ->whereRaw("LOWER(r.nama_role) LIKE '%dokter%'")
+            ->select('ru.idrole_user', 'u.nama as dokter_nama')
+            ->get();
+
+        return view('admin.datarekammedis.create', compact('reservations', 'doctors'));
     }
 
     public function store(Request $request)
@@ -51,8 +73,10 @@ class RekamMedis extends Controller
             'anamnesa' => 'nullable|string',
             'temuan_klinis' => 'nullable|string',
             'diagnosa' => 'nullable|string',
-            'dokter_pemeriksa' => 'nullable|string|max:255',
-            'idreservasi_dokter' => 'nullable|integer',
+            // dokter_pemeriksa stores the `role_user.idrole_user` that references the doctor
+            'dokter_pemeriksa' => 'nullable|integer|exists:role_user,idrole_user',
+            // idreservasi_dokter should reference an existing temu_dokter reservation
+            'idreservasi_dokter' => 'nullable|integer|exists:temu_dokter,idreservasi_dokter',
         ]);
 
         $id = DB::table('rekam_medis')->insertGetId(array_merge($data, [
@@ -157,7 +181,14 @@ class RekamMedis extends Controller
     {
         $rekam = DB::table('rekam_medis')->where('idrekam_medis', $id)->first();
         if (!$rekam) abort(404);
-        return view('admin.datarekammedis.detail_create', compact('rekam'));
+        // Fetch kode tindakan terapi list for dropdown
+        $tindakans = DB::table('kode_tindakan_terapi')
+            ->select('idkode_tindakan_terapi', 'kode', 'deskripsi_tindakan_terapi')
+            // show newest entries first so recently added kode mudah terlihat in dropdown
+            ->orderByDesc('idkode_tindakan_terapi')
+            ->get();
+
+        return view('admin.datarekammedis.detail_create', compact('rekam', 'tindakans'));
     }
 
     public function storeDetail(Request $request, $id)
@@ -166,7 +197,7 @@ class RekamMedis extends Controller
         if (!$rekam) abort(404);
 
         $data = $request->validate([
-            'idkode_tindakan_terapi' => 'nullable|integer',
+            'idkode_tindakan_terapi' => 'nullable|integer|exists:kode_tindakan_terapi,idkode_tindakan_terapi',
             'detail' => 'required|string',
         ]);
 

@@ -5,7 +5,6 @@
     <div class="d-flex align-items-center justify-content-between">
         <h1 class="mb-0">Profil Perawat</h1>
         <div>
-            <a href="{{ route('perawat.profil.create') }}" class="btn btn-sm btn-success">Buat Profil</a>
             <a href="{{ route('perawat.profil.edit', $perawat->id_perawat) }}" class="btn btn-sm btn-primary">Edit Profil</a>
         </div>
     </div>

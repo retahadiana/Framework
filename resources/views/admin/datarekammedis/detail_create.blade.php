@@ -17,8 +17,17 @@
     <form action="{{ route('datarekammedis.detail.store', $rekam->idrekam_medis) }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="idkode_tindakan_terapi">ID Kode Tindakan Terapi (opsional)</label>
-            <input type="text" name="idkode_tindakan_terapi" id="idkode_tindakan_terapi" class="form-control" value="{{ old('idkode_tindakan_terapi') }}">
+            <label for="idkode_tindakan_terapi">Kode Tindakan Terapi (opsional)</label>
+            <select name="idkode_tindakan_terapi" id="idkode_tindakan_terapi" class="form-control">
+                <option value="">-- Pilih kode tindakan (opsional) --</option>
+                @if(isset($tindakans))
+                    @foreach($tindakans as $t)
+                        <option value="{{ $t->idkode_tindakan_terapi }}" {{ old('idkode_tindakan_terapi') == $t->idkode_tindakan_terapi ? 'selected' : '' }}>
+                            {{ $t->kode }} - {{ Str::limit($t->deskripsi_tindakan_terapi, 80) }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
         </div>
         <div class="mb-3">
             <label for="detail">Detail</label>

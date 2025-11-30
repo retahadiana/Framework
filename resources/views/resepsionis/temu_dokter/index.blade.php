@@ -63,7 +63,13 @@
                             @forelse($antrianHariIni as $t)
                                 <tr>
                                     <td><strong>#{{ $t->no_urut }}</strong></td>
-                                    <td>{{ optional($t->waktu_daftar)->format('d/m/Y H:i') ?? '-' }}</td>
+                                    <td>
+                                        @if($t->waktu_daftar)
+                                            <time class="live-time" data-datetime="{{ $t->waktu_daftar->format('c') }}">{{ $t->waktu_daftar->format('d/m/Y H:i:s') }}</time>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ optional($t->pet)->nama ?? '-' }}</td>
                                     <td>{{ optional(optional($t->pet)->pemilik)->nama_pemilik ?? '-' }}</td>
                                     <td>{{ optional(optional($t->idrole_user ? App\Models\RoleUser::find($t->idrole_user) : null)->user)->nama ?? '-' }}</td>
@@ -113,7 +119,13 @@
                                 <tr>
                                     <td>{{ $d->idreservasi_dokter }}</td>
                                     <td>#{{ $d->no_urut }}</td>
-                                    <td>{{ optional($d->waktu_daftar)->format('d/m/Y H:i') ?? '-' }}</td>
+                                    <td>
+                                        @if($d->waktu_daftar)
+                                            <time class="live-time" data-datetime="{{ $d->waktu_daftar->format('c') }}">{{ $d->waktu_daftar->format('d/m/Y H:i:s') }}</time>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td>{{ optional($d->pet)->nama ?? '-' }}</td>
                                     <td>{{ optional(optional($d->pet)->pemilik)->nama_pemilik ?? '-' }}</td>
                                     <td>{{ $d->status }}</td>
@@ -129,3 +141,35 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+// Update all <time class="live-time" data-datetime="..."></time> elements every second
+(function(){
+    function pad(n){return n<10? '0'+n : n}
+    function formatLocal(dt){
+        var d = dt.getDate(), m = dt.getMonth()+1, y = dt.getFullYear();
+        var hh = pad(dt.getHours()), mm = pad(dt.getMinutes()), ss = pad(dt.getSeconds());
+        return (d<10? '0'+d: d) + '/' + (m<10? '0'+m: m) + '/' + y + ' ' + hh + ':' + mm + ':' + ss;
+    }
+
+    function updateTimes(){
+        var els = document.querySelectorAll('time.live-time[data-datetime]');
+        els.forEach(function(el){
+            var iso = el.getAttribute('data-datetime');
+            if(!iso) return;
+            var dt = new Date(iso);
+            if(isNaN(dt)) return;
+            // Show local formatted time with seconds
+            el.textContent = formatLocal(dt);
+        });
+    }
+
+    // Initial update and then every second
+    document.addEventListener('DOMContentLoaded', function(){
+        updateTimes();
+        setInterval(updateTimes, 1000);
+    });
+})();
+</script>
+@endpush
