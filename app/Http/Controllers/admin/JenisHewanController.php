@@ -11,7 +11,8 @@ class JenisHewanController extends Controller
 
     public function index()
     {
-        $data = \DB::table('jenis_hewan')->select('idjenis_hewan', 'nama_jenis_hewan')->get();
+        // Use the Eloquent model so the SoftDeletes global scope hides trashed rows
+        $data = JenisHewan::select('idjenis_hewan', 'nama_jenis_hewan')->get();
         return view('admin.jenishewan.index', compact('data'));
     }
 
@@ -47,8 +48,9 @@ class JenisHewanController extends Controller
 
     public function edit($id)
     {
-        $item = \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->first();
-        if (!$item) {
+        // Use Eloquent so soft-deleted items are not returned
+        $item = JenisHewan::find($id);
+        if (! $item) {
             abort(404);
         }
         return view('admin.jenishewan.update', compact('item'));
@@ -57,9 +59,9 @@ class JenisHewanController extends Controller
     public function update(\Illuminate\Http\Request $request, $id)
     {
         $validated = $this->validateJenisHewan($request);
-        \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->update([
-            'nama_jenis_hewan' => $this->formatNamaJenisHewan($validated['nama_jenis_hewan'])
-        ]);
+        $item = JenisHewan::findOrFail($id);
+        $item->nama_jenis_hewan = $this->formatNamaJenisHewan($validated['nama_jenis_hewan']);
+        $item->save();
         return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil diupdate.');
     }
 
