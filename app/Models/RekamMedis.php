@@ -10,16 +10,19 @@ use App\Models\Pet;
 use App\Models\Pemilik;
 use App\Models\DetailRekamMedis;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class RekamMedis extends Model
 {
+    use SoftDeletes;
     protected $table = 'rekam_medis';
     protected $primaryKey = 'idrekam_medis';
     public $incrementing = true;
     protected $keyType = 'int';
     // Keep fillable in sync with actual database columns for `rekam_medis`.
     // The table doesn't include `idpet`/`idpemilik` in this schema, so omit them.
-    protected $fillable = ['created_at', 'anamnesa', 'temuan_klinis', 'diagnosa', 'idreservasi_dokter', 'dokter_pemeriksa'];
+    protected $fillable = ['created_at', 'anamnesa', 'temuan_klinis', 'diagnosa', 'idreservasi_dokter', 'dokter_pemeriksa', 'deleted_by'];
     // public $timestamps = false;
 
     // This table does not have `updated_at` column; disable Eloquent timestamps
@@ -74,6 +77,22 @@ class RekamMedis extends Model
     public function detailRekamMedis()
     {
         return $this->hasMany(DetailRekamMedis::class, 'idrekam_medis', 'idrekam_medis');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            if (Auth::check()) {
+                $model->deleted_by = Auth::id();
+                if (method_exists($model, 'saveQuietly')) {
+                    $model->saveQuietly();
+                } else {
+                    $model->save();
+                }
+            }
+        });
     }
 
 }

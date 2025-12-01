@@ -65,8 +65,13 @@ class JenisHewanController extends Controller
 
     public function destroy($id)
     {
-        \DB::table('jenis_hewan')->where('idjenis_hewan', $id)->delete();
-        return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil dihapus.');
+        $item = JenisHewan::find($id);
+        if ($item) {
+            $item->delete();
+            return redirect()->route('jenis-hewan.index')->with('success', 'Jenis hewan berhasil dihapus.');
+        }
+
+        return redirect()->route('jenis-hewan.index')->with('error', 'Data tidak ditemukan.');
     }
 }
 

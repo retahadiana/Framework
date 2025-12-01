@@ -14,7 +14,7 @@ class KategoriKlinisController extends Controller
 
     public function index()
     {
-        $data = \DB::table('kategori_klinis')->get();
+        $data = \DB::table('kategori_klinis')->whereNull('kategori_klinis.deleted_at')->get();
         return view('admin.datakategoriklinis.index', compact('data'));
     }
 
@@ -70,7 +70,7 @@ class KategoriKlinisController extends Controller
     // Tampilkan form edit
     public function edit($id)
     {
-        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->first();
+        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->whereNull('deleted_at')->first();
         if (!$kategoriKlinis) {
             abort(404);
         }
@@ -90,7 +90,7 @@ class KategoriKlinisController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->first();
+        $kategoriKlinis = \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->whereNull('deleted_at')->first();
         if (!$kategoriKlinis) {
             abort(404);
         }
@@ -100,7 +100,12 @@ class KategoriKlinisController extends Controller
     // Hapus data
     public function destroy($id)
     {
-        \DB::table('kategori_klinis')->where('idkategori_klinis', $id)->delete();
-        return redirect()->route('kategori-klinis.index')->with('success', 'Kategori klinis berhasil dihapus.');
+        $item = KategoriKlinis::find($id);
+        if ($item) {
+            $item->delete();
+            return redirect()->route('kategori-klinis.index')->with('success', 'Kategori klinis berhasil dihapus.');
+        }
+
+        return redirect()->route('kategori-klinis.index')->with('error', 'Data tidak ditemukan.');
     }
 }

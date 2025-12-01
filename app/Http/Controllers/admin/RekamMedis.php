@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\RekamMedis as RekamMedisModel;
+use App\Models\DetailRekamMedis;
+use App\Models\KodeTindakanTerapi as KodeTindakanModel;
 
 class RekamMedis extends Controller
 {
@@ -170,21 +173,31 @@ class RekamMedis extends Controller
 
     public function destroy($id)
     {
-        // Hapus detail terlebih dahulu
-        DB::table('detail_rekam_medis')->where('idrekam_medis', $id)->delete();
-        DB::table('rekam_medis')->where('idrekam_medis', $id)->delete();
+        // Soft-delete details first (if any) then the rekam medis record
+        $rekam = RekamMedisModel::find($id);
+        if (! $rekam) {
+            return redirect()->route('datarekammedis.index')->with('error', 'Data tidak ditemukan.');
+        }
+
+        // Soft delete related details via relationship
+        if (method_exists($rekam, 'detailRekamMedis')) {
+            $rekam->detailRekamMedis()->delete();
+        } else {
+            DetailRekamMedis::where('idrekam_medis', $id)->delete();
+        }
+
+        $rekam->delete();
+
         return redirect()->route('datarekammedis.index')->with('success', 'Rekam medis berhasil dihapus.');
     }
 
     // Detail actions
     public function createDetail($id)
     {
-        $rekam = DB::table('rekam_medis')->where('idrekam_medis', $id)->first();
+        $rekam = RekamMedisModel::find($id);
         if (!$rekam) abort(404);
         // Fetch kode tindakan terapi list for dropdown
-        $tindakans = DB::table('kode_tindakan_terapi')
-            ->select('idkode_tindakan_terapi', 'kode', 'deskripsi_tindakan_terapi')
-            // show newest entries first so recently added kode mudah terlihat in dropdown
+        $tindakans = KodeTindakanModel::select('idkode_tindakan_terapi', 'kode', 'deskripsi_tindakan_terapi')
             ->orderByDesc('idkode_tindakan_terapi')
             ->get();
 
@@ -193,7 +206,7 @@ class RekamMedis extends Controller
 
     public function storeDetail(Request $request, $id)
     {
-        $rekam = DB::table('rekam_medis')->where('idrekam_medis', $id)->first();
+        $rekam = RekamMedisModel::find($id);
         if (!$rekam) abort(404);
 
         $data = $request->validate([
@@ -201,7 +214,7 @@ class RekamMedis extends Controller
             'detail' => 'required|string',
         ]);
 
-        DB::table('detail_rekam_medis')->insert(array_merge($data, [
+        DetailRekamMedis::create(array_merge($data, [
             'idrekam_medis' => $id,
         ]));
 
@@ -210,7 +223,11 @@ class RekamMedis extends Controller
 
     public function destroyDetail($id, $detailId)
     {
-        DB::table('detail_rekam_medis')->where('iddetail_rekam_medis', $detailId)->delete();
+        $detail = DetailRekamMedis::find($detailId);
+        if ($detail) {
+            $detail->delete();
+        }
+
         return redirect()->route('datarekammedis.show', $id)->with('success', 'Detail rekam medis berhasil dihapus.');
     }
 }

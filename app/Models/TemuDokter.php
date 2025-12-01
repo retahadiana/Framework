@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class TemuDokter extends Model
 {
+    use SoftDeletes;
     /**
      * Table and primary key used by this model.
      */
@@ -30,6 +33,7 @@ class TemuDokter extends Model
         'waktu_daftar',
         'status',
         'keterangan',
+        'deleted_by',
     ];
 
     /**
@@ -37,6 +41,7 @@ class TemuDokter extends Model
      */
     protected $casts = [
         'waktu_daftar' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**
@@ -88,5 +93,21 @@ class TemuDokter extends Model
     public function roleUser()
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            if (Auth::check()) {
+                $model->deleted_by = Auth::id();
+                if (method_exists($model, 'saveQuietly')) {
+                    $model->saveQuietly();
+                } else {
+                    $model->save();
+                }
+            }
+        });
     }
 }

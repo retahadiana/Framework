@@ -14,7 +14,7 @@ class KategoriController extends Controller
 
     public function index()
     {
-        $data = \DB::table('kategori')->get();
+        $data = \DB::table('kategori')->whereNull('kategori.deleted_at')->get();
         return view('admin.datakategori.index', compact('data'));
     }
 
@@ -70,7 +70,7 @@ class KategoriController extends Controller
     // Tampilkan form edit
     public function edit($id)
     {
-        $kategori = \DB::table('kategori')->where('idkategori', $id)->first();
+        $kategori = \DB::table('kategori')->where('idkategori', $id)->whereNull('deleted_at')->first();
         if (!$kategori) {
             abort(404);
         }
@@ -90,7 +90,7 @@ class KategoriController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kategori = \DB::table('kategori')->where('idkategori', $id)->first();
+        $kategori = \DB::table('kategori')->where('idkategori', $id)->whereNull('deleted_at')->first();
         if (!$kategori) {
             abort(404);
         }
@@ -100,7 +100,12 @@ class KategoriController extends Controller
     // Hapus data
     public function destroy($id)
     {
-        \DB::table('kategori')->where('idkategori', $id)->delete();
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        $item = Kategori::find($id);
+        if ($item) {
+            $item->delete();
+            return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        }
+
+        return redirect()->route('kategori.index')->with('error', 'Data tidak ditemukan.');
     }
 }

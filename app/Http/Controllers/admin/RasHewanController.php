@@ -117,11 +117,11 @@ class RasHewanController extends Controller
 
     public function destroy($id)
     {
-        $item = \DB::table('ras_hewan')->where('idras_hewan', $id)->first();
+        $item = RasHewan::find($id);
         if (!$item) {
             abort(404);
         }
-        \DB::table('ras_hewan')->where('idras_hewan', $id)->delete();
+        $item->delete();
         return redirect()->route('ras-hewan.index')->with('success', 'Ras hewan berhasil dihapus.');
     }
 

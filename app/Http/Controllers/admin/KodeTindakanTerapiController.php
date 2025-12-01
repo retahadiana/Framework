@@ -22,6 +22,8 @@ class KodeTindakanTerapiController extends Controller
                 'kategori.nama_kategori',
                 'kategori_klinis.nama_kategori_klinis'
             )
+            // exclude soft-deleted kode_tindakan_terapi rows
+            ->whereNull('kode_tindakan_terapi.deleted_at')
             ->get();
         return view('admin.datatindakan.index', compact('data'));
     }
@@ -64,8 +66,8 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan form create
     public function create()
     {
-        $kategoriList = \DB::table('kategori')->get();
-        $kategoriKlinisList = \DB::table('kategori_klinis')->get();
+        $kategoriList = \DB::table('kategori')->whereNull('kategori.deleted_at')->get();
+        $kategoriKlinisList = \DB::table('kategori_klinis')->whereNull('kategori_klinis.deleted_at')->get();
         return view('admin.datatindakan.create', compact('kategoriList', 'kategoriKlinisList'));
     }
 
@@ -90,12 +92,12 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan form edit
     public function edit($id)
     {
-        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
+        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->whereNull('deleted_at')->first();
         if (!$kodeTindakanTerapi) {
             abort(404);
         }
-        $kategoriList = \DB::table('kategori')->get();
-        $kategoriKlinisList = \DB::table('kategori_klinis')->get();
+        $kategoriList = \DB::table('kategori')->whereNull('kategori.deleted_at')->get();
+        $kategoriKlinisList = \DB::table('kategori_klinis')->whereNull('kategori_klinis.deleted_at')->get();
         return view('admin.datatindakan.update', compact('kodeTindakanTerapi', 'kategoriList', 'kategoriKlinisList'));
     }
 
@@ -120,7 +122,7 @@ class KodeTindakanTerapiController extends Controller
     // Tampilkan konfirmasi hapus
     public function delete($id)
     {
-        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->first();
+        $kodeTindakanTerapi = \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->whereNull('deleted_at')->first();
         if (!$kodeTindakanTerapi) {
             abort(404);
         }
@@ -130,7 +132,12 @@ class KodeTindakanTerapiController extends Controller
     // Hapus data
     public function destroy($id)
     {
-        \DB::table('kode_tindakan_terapi')->where('idkode_tindakan_terapi', $id)->delete();
-        return redirect()->route('kode-tindakan-terapi.index')->with('success', 'Kode tindakan terapi berhasil dihapus.');
+        $item = KodeTindakanTerapi::find($id);
+        if ($item) {
+            $item->delete();
+            return redirect()->route('kode-tindakan-terapi.index')->with('success', 'Kode tindakan terapi berhasil dihapus.');
+        }
+
+        return redirect()->route('kode-tindakan-terapi.index')->with('error', 'Data tidak ditemukan.');
     }
 }

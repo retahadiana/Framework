@@ -25,6 +25,8 @@ class PetController extends Controller
                 'jenis_hewan.nama_jenis_hewan as nama_jenis_hewan',
                 'user.nama as nama_pemilik'
             )
+            // Pastikan kita hanya menampilkan record yang belum di-soft-delete
+            ->whereNull('pet.deleted_at')
             ->get();
         return view('admin.datapet.index', compact('data'));
     }
@@ -96,7 +98,8 @@ class PetController extends Controller
     }
     public function edit($id)
     {
-        $item = \DB::table('pet')->where('idpet', $id)->first();
+        // Jangan ambil record yang sudah di-soft-delete
+        $item = \DB::table('pet')->where('idpet', $id)->whereNull('deleted_at')->first();
         if (!$item) {
             abort(404);
         }
@@ -117,7 +120,8 @@ class PetController extends Controller
             'idpemilik' => 'required|integer',
             'idras_hewan' => 'required|integer',
         ]);
-        $item = \DB::table('pet')->where('idpet', $id)->first();
+        // Pastikan tidak mengupdate record yang sudah dihapus secara lembut
+        $item = \DB::table('pet')->where('idpet', $id)->whereNull('deleted_at')->first();
         if (!$item) {
             abort(404);
         }
@@ -133,11 +137,11 @@ class PetController extends Controller
     }
     public function destroy($id)
     {
-        $item = \DB::table('pet')->where('idpet', $id)->first();
+        $item = Pet::find($id);
         if (!$item) {
             abort(404);
         }
-        \DB::table('pet')->where('idpet', $id)->delete();
+        $item->delete();
         return redirect()->route('pet.index')->with('success', 'Data Pet berhasil dihapus.');
     }
 

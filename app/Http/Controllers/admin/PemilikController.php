@@ -138,11 +138,11 @@ class PemilikController extends Controller
 
     public function destroy($id)
     {
-        $item = \DB::table('pemilik')->where('idpemilik', $id)->first();
+        $item = Pemilik::find($id);
         if (!$item) {
             abort(404);
         }
-        \DB::table('pemilik')->where('idpemilik', $id)->delete();
+        $item->delete();
         return redirect()->route('pemilik.index')->with('success', 'Pemilik berhasil dihapus.');
     }
         

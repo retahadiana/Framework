@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Pemilik extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     protected $table = 'pemilik';
     protected $primaryKey = 'idpemilik';
     public $incrementing = true;
@@ -17,6 +20,7 @@ class Pemilik extends Model
         'no_wa',
         'alamat',
         'iduser',
+        'deleted_by',
     ];
 
     public $timestamps = false;
@@ -49,5 +53,21 @@ class Pemilik extends Model
     public function rekamMedis()
     {
         return $this->hasMany(RekamMedis::class, 'idpemilik', 'idpemilik');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            if (Auth::check()) {
+                $model->deleted_by = Auth::id();
+                if (method_exists($model, 'saveQuietly')) {
+                    $model->saveQuietly();
+                } else {
+                    $model->save();
+                }
+            }
+        });
     }
 }
