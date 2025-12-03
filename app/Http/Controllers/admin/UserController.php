@@ -4,6 +4,8 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -14,7 +16,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $data = \DB::table('user')->get();
+        $data = \DB::table('user')->whereNull('deleted_at')->get();
         return view('admin.datauser.index', compact('data'));
     }
 
@@ -71,7 +73,7 @@ class UserController extends Controller
     // Tampilkan form edit user
     public function edit($iduser)
     {
-        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        $user = \DB::table('user')->where('iduser', $iduser)->whereNull('deleted_at')->first();
         if (!$user) {
             abort(404);
         }
@@ -117,11 +119,32 @@ class UserController extends Controller
     // Tampilkan form reset password
     public function showResetPassword($iduser)
     {
-        $user = \DB::table('user')->where('iduser', $iduser)->first();
+        $user = \DB::table('user')->where('iduser', $iduser)->whereNull('deleted_at')->first();
         if (!$user) {
             abort(404);
         }
         return view('admin.datauser.resetPassword', compact('user'));
+    }
+
+    // Soft delete user (set deleted_at and deleted_by)
+    public function destroy(Request $request, $iduser)
+    {
+        // Prevent deleting currently authenticated user
+        if (Auth::check() && Auth::id() == $iduser) {
+            return redirect()->route('user.index')->with('error', 'Tidak dapat menghapus user yang sedang aktif.');
+        }
+
+        $user = \DB::table('user')->where('iduser', $iduser)->whereNull('deleted_at')->first();
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'User tidak ditemukan.');
+        }
+
+        \DB::table('user')->where('iduser', $iduser)->update([
+            'deleted_at' => Carbon::now(),
+            'deleted_by' => Auth::id(),
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'User berhasil dihapus.');
     }
 
     // Reset password

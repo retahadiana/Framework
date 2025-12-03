@@ -34,7 +34,14 @@
                 <td>{{ $dokter->id_user }}</td>
                 <td>{{ $dokter->user ? $dokter->user->nama : '-' }}</td>
                 <td>
-                    <a href="{{ route('dokter.edit', $dokter->id_dokter) }}" class="btn btn-primary btn-sm">Edit</a>
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <a href="{{ route('dokter.edit', $dokter->id_dokter) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form action="{{ route('dokter.destroy', $dokter->id_dokter) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data dokter ini?');" style="margin:0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @endforeach

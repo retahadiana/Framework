@@ -20,7 +20,7 @@
                             <th>ID User</th>
                             <th>Nama</th>
                             <th>Role</th>
-                            <th style="width:160px;">Aksi</th>
+                            <th style="width:260px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,16 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('role.create', ['iduser' => $user->iduser]) }}" class="btn btn-sm btn-success">Tambah Role</a>
+                                <div class="d-flex justify-content-end align-items-center" style="gap:8px;">
+                                    <a href="{{ route('role.create', ['iduser' => $user->iduser]) }}" class="btn btn-sm btn-success">Tambah Role</a>
+                                    @if(!empty($user->idrole_user))
+                                        <form action="{{ route('role.destroy', $user->idrole_user) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus role ini untuk user tersebut?');" style="margin:0;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                         @endforeach

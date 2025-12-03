@@ -5,13 +5,32 @@ use App\Http\Controllers\Controller;
 use App\Models\Perawat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class PerawatController extends Controller
 {
     public function index()
     {
-        $perawats = Perawat::with('user')->get();
+        // Hanya tampilkan perawat yang belum di-soft-delete
+        $perawats = Perawat::whereNull('deleted_at')->with('user')->get();
         return view('admin.perawat.index', compact('perawats'));
+    }
+
+    // Soft delete perawat (set deleted_at and deleted_by)
+    public function destroy($id)
+    {
+        $entry = \DB::table('perawat')->where('id_perawat', $id)->whereNull('deleted_at')->first();
+        if (!$entry) {
+            return redirect()->route('perawat.index')->with('error', 'Data perawat tidak ditemukan.');
+        }
+
+        \DB::table('perawat')->where('id_perawat', $id)->update([
+            'deleted_at' => Carbon::now(),
+            'deleted_by' => Auth::id(),
+        ]);
+
+        return redirect()->route('perawat.index')->with('success', 'Data perawat berhasil dihapus.');
     }
 
     public function create()

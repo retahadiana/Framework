@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class RoleController extends Controller
 {
@@ -27,9 +29,26 @@ class RoleController extends Controller
         $data = \DB::table('user')
             ->leftJoin('role_user', 'user.iduser', '=', 'role_user.iduser')
             ->leftJoin('role', 'role_user.idrole', '=', 'role.idrole')
-            ->select('user.*', 'role.nama_role', 'role_user.status as role_status')
+            ->select('user.*', 'role.nama_role', 'role_user.status as role_status', 'role_user.idrole_user')
+            ->whereNull('role_user.deleted_at')
             ->get();
         return view('admin.role.index', compact('data'));
+    }
+
+    // Soft delete role_user entry
+    public function destroy(Request $request, $idroleuser)
+    {
+        $entry = \DB::table('role_user')->where('idrole_user', $idroleuser)->whereNull('deleted_at')->first();
+        if (!$entry) {
+            return redirect()->route('role.index')->with('error', 'Entri role tidak ditemukan.');
+        }
+
+        \DB::table('role_user')->where('idrole_user', $idroleuser)->update([
+            'deleted_at' => Carbon::now(),
+            'deleted_by' => Auth::id(),
+        ]);
+
+        return redirect()->route('role.index')->with('success', 'Role pengguna berhasil dihapus.');
     }
 
     // Validasi

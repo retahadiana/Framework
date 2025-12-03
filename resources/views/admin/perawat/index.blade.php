@@ -23,7 +23,7 @@
                 <th>Aksi</th>
             </tr>
         </thead>
-        <tbody>
+                <tbody>
             @foreach($perawats as $perawat)
             <tr>
                 <td>{{ $perawat->id_perawat }}</td>
@@ -34,7 +34,14 @@
                 <td>{{ $perawat->id_user }}</td>
                 <td>{{ $perawat->user ? $perawat->user->nama : '-' }}</td>
                 <td>
-                    <a href="{{ route('perawat.edit', $perawat->id_perawat) }}" class="btn btn-primary btn-sm">Edit</a>
+                    <div style="display:flex; justify-content:flex-end; gap:8px;">
+                        <a href="{{ route('perawat.edit', $perawat->id_perawat) }}" class="btn btn-primary btn-sm">Edit</a>
+                        <form action="{{ route('perawat.destroy', $perawat->id_perawat) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data perawat ini?');" style="margin:0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             @endforeach

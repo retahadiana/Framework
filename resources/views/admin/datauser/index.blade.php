@@ -27,6 +27,11 @@
                             <td>
                                 <a href="{{ route('user.edit', $item->iduser) }}" class="user-action-link user-edit">Edit</a>
                                 <a href="{{ route('user.showResetPassword', $item->iduser) }}" class="user-action-link user-reset">Reset Password</a>
+                                <form action="{{ route('user.destroy', $item->iduser) }}" method="POST" style="display:inline-block; margin:0; padding:0;" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="user-action-link user-delete" style="background:none; border:none; padding:0; cursor:pointer;">Hapus</button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -65,6 +70,12 @@
         }
         .user-action-link.user-reset:hover {
             color: #e74c3c;
+        }
+        .user-action-link.user-delete {
+            color: #e74c3c;
+        }
+        .user-action-link.user-delete:hover {
+            color: #c0392b;
         }
         @media (max-width: 900px) {
             .table-standard { min-width: 600px; }

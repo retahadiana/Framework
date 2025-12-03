@@ -6,13 +6,32 @@ use App\Http\Controllers\Controller;
 use App\Models\Dokter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DokterController extends Controller
 {
     public function index()
     {
-        $dokters = Dokter::with('user')->get();
+        // Hanya tampilkan data dokter yang belum di-soft-delete
+        $dokters = Dokter::whereNull('deleted_at')->with('user')->get();
         return view('admin.dokter.index', compact('dokters'));
+    }
+
+    // Soft delete dokter (set deleted_at and deleted_by)
+    public function destroy($id)
+    {
+        $entry = \DB::table('dokter')->where('id_dokter', $id)->whereNull('deleted_at')->first();
+        if (!$entry) {
+            return redirect()->route('dokter.index')->with('error', 'Data dokter tidak ditemukan.');
+        }
+
+        \DB::table('dokter')->where('id_dokter', $id)->update([
+            'deleted_at' => Carbon::now(),
+            'deleted_by' => Auth::id(),
+        ]);
+
+        return redirect()->route('dokter.index')->with('success', 'Data dokter berhasil dihapus.');
     }
 
     public function create()

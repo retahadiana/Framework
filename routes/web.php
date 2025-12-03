@@ -97,6 +97,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
     Route::get('/', [RoleController::class, 'index'])->name('index');
     Route::get('/{iduser}/create', [RoleController::class, 'create'])->name('create');
     Route::post('/{iduser}/store', [RoleController::class, 'store'])->name('store');
+    Route::delete('/{idroleuser}/destroy', [RoleController::class, 'destroy'])->name('destroy');
     });
     Route::prefix('user')->name('user.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');
@@ -106,6 +107,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
     Route::put('/{iduser}', [UserController::class, 'update'])->name('update');
     Route::get('/{iduser}/resetPassword', [UserController::class, 'showResetPassword'])->name('showResetPassword');
     Route::post('/{iduser}/resetPassword', [UserController::class, 'resetPassword'])->name('resetPassword');
+    Route::delete('/{iduser}', [UserController::class, 'destroy'])->name('destroy');
     });
     // Admin routes for managing doctors
     Route::prefix('dokter')->name('dokter.')->group(function () {
@@ -114,6 +116,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
     Route::post('/store', [App\Http\Controllers\Admin\DokterController::class, 'store'])->name('store');
     Route::get('/{id}/edit', [App\Http\Controllers\Admin\DokterController::class, 'edit'])->name('edit');
     Route::put('/{id}', [App\Http\Controllers\Admin\DokterController::class, 'update'])->name('update');
+    Route::delete('/{id}', [App\Http\Controllers\Admin\DokterController::class, 'destroy'])->name('destroy');
     });
     // Admin routes for managing nurses
     Route::prefix('perawat')->name('perawat.')->group(function () {
@@ -122,6 +125,7 @@ Route::middleware(['auth', \App\Http\Middleware\IsAdministrator::class])->group(
         Route::post('/store', [App\Http\Controllers\Admin\PerawatController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [App\Http\Controllers\Admin\PerawatController::class, 'edit'])->name('edit');
         Route::put('/{id}', [App\Http\Controllers\Admin\PerawatController::class, 'update'])->name('update');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\PerawatController::class, 'destroy'])->name('destroy');
     });
 
     // Admin routes for Temu Dokter (appointments)
